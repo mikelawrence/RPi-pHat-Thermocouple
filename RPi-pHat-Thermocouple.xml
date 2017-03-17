@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/mike/Documents/KiCAD/RPi-pHat-Thermocouple/RPi-pHat-Thermocouple.sch</source>
+    <date>Friday, March 17, 2017 'PMt' 04:21:19 PM</date>
+    <tool>Eeschema 4.0.5</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Raspberry Pi Zero Thermocouple pHat</title>
+        <company>Mike Lawrence</company>
+        <rev>1.0</rev>
+        <date>March 2017</date>
+        <source>RPi-pHat-Thermocouple.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="J1">
+      <value>RPi_GPIO</value>
+      <footprint>raspberry-ml:Pin_Header_Straight_2x20</footprint>
+      <fields>
+        <field name="Part Number">2222</field>
+        <field name="Manufacturer">Adafruit</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">485-2222</field>
+      </fields>
+      <libsource lib="raspberry-ml" part="RPi_GPIO"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5516AE26</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>1k</value>
+      <footprint>Resistors_SMD:R_0603</footprint>
+      <datasheet>https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C283.pdf</datasheet>
+      <fields>
+        <field name="Tolerance">1%</field>
+        <field name="Manufacturer">Panasonic</field>
+        <field name="Part Number">ERJ-3EKF1001V</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">667-ERJ-3EKF1001V</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58A9B1BF</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>3.9k</value>
+      <footprint>Resistors_SMD:R_0603</footprint>
+      <datasheet>https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C283.pdf</datasheet>
+      <fields>
+        <field name="Tolerance">1%</field>
+        <field name="Manufacturer">Panasonic</field>
+        <field name="Part Number">ERJ-3EKF3901V</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">667-ERJ-3EKF3901V</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58A9C93F</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>3.9k</value>
+      <footprint>Resistors_SMD:R_0603</footprint>
+      <datasheet>https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C283.pdf</datasheet>
+      <fields>
+        <field name="Tolerance">1%</field>
+        <field name="Manufacturer">Panasonic</field>
+        <field name="Part Number">ERJ-3EKF3901V</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">667-ERJ-3EKF3901V</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58A9CC2E</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>10nF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H103KA01D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X103K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58A9F489</tstamp>
+    </comp>
+    <comp ref="C7">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H104KA93D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X104K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58A9FAF4</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H104KA93D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X104K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58AA09C4</tstamp>
+    </comp>
+    <comp ref="SW1">
+      <value>Write</value>
+      <footprint>Buttons_Switches_SMD:SW_SPST_B3U-3000P-B</footprint>
+      <datasheet>http://www.mouser.com/ds/2/307/en-b3u-3615.pdf</datasheet>
+      <fields>
+        <field name="Part Number">B3U-3000P-B</field>
+        <field name="Manufacturer">Omron</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">653-B3U-3000P-B</field>
+      </fields>
+      <libsource lib="switches" part="SW_Push"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58AE1963</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>4.7k</value>
+      <footprint>Resistors_SMD:R_0603</footprint>
+      <datasheet>https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C283.pdf</datasheet>
+      <fields>
+        <field name="Part Number">ERJ-3EKF4701V</field>
+        <field name="Manufacturer">Panasonic</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">667-ERJ-3EKF4701V</field>
+        <field name="Tolerance">1%</field>
+      </fields>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58AFBF2D</tstamp>
+    </comp>
+    <comp ref="U5">
+      <value>AT24CS32</value>
+      <footprint>Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm</footprint>
+      <datasheet>http://www.atmel.com/images/Atmel-8869-SEEPROM-AT24CS32-Datasheet.pdf</datasheet>
+      <fields>
+        <field name="Part Number">AT24CS32-SSHM</field>
+        <field name="Manufacturer">Atmel</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">556-AT24CS32-SSHM-T</field>
+      </fields>
+      <libsource lib="memory-ml" part="AT24CS32-SSHM"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C2F540</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>MAX31850K</value>
+      <footprint>Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm</footprint>
+      <libsource lib="maxim-ml" part="MAX31850KATB"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C2DECB</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>10nF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H103KA01D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X103K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C30F15</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H104KA93D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X104K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C30F1F</tstamp>
+    </comp>
+    <comp ref="U3">
+      <value>MAX31850K</value>
+      <footprint>Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm</footprint>
+      <libsource lib="maxim-ml" part="MAX31850KATB"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C30F39</tstamp>
+    </comp>
+    <comp ref="C8">
+      <value>10nF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H103KA01D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X103K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C312FA</tstamp>
+    </comp>
+    <comp ref="C6">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H104KA93D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X104K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C31304</tstamp>
+    </comp>
+    <comp ref="U4">
+      <value>MAX31850K</value>
+      <footprint>Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm</footprint>
+      <libsource lib="maxim-ml" part="MAX31850KATB"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C3131E</tstamp>
+    </comp>
+    <comp ref="C10">
+      <value>10nF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H103KA01D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X103K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C329E6</tstamp>
+    </comp>
+    <comp ref="C9">
+      <value>0.1uF</value>
+      <footprint>Capacitors_SMD:C_0603</footprint>
+      <datasheet>http://www.mouser.com/ProductDetail/Murata-Electronics/GRM188R71H103KA01D/?qs=sGAEpiMZZMs0AnBnWHyRQNOmsPzkISN05dIajb7qEY0%3d</datasheet>
+      <fields>
+        <field name="Part Number">GRM188R71H104KA93D</field>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">81-GRM39X104K50D</field>
+      </fields>
+      <libsource lib="device" part="C_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C329F0</tstamp>
+    </comp>
+    <comp ref="U6">
+      <value>MAX31850K</value>
+      <footprint>Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm</footprint>
+      <libsource lib="maxim-ml" part="MAX31850KATB"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C32A0A</tstamp>
+    </comp>
+    <comp ref="P1">
+      <value>CONN_01X02</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C6C6FE</tstamp>
+    </comp>
+    <comp ref="P2">
+      <value>CONN_01X02</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C6CCA8</tstamp>
+    </comp>
+    <comp ref="P3">
+      <value>CONN_01X02</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C6CD25</tstamp>
+    </comp>
+    <comp ref="P4">
+      <value>CONN_01X02</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C6CDA2</tstamp>
+    </comp>
+    <comp ref="P6">
+      <value>CONN_01X03</value>
+      <footprint>Pin_Headers:Pin_Header_Straight_1x03_Pitch2.00mm</footprint>
+      <libsource lib="conn" part="CONN_01X03"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C6D7E1</tstamp>
+    </comp>
+    <comp ref="BZ1">
+      <value>Buzzer</value>
+      <footprint>cui-ml:CMI-9655S-SMT</footprint>
+      <datasheet>http://www.mouser.com/ds/2/670/cmi-9655s-smt-935130.pdf</datasheet>
+      <fields>
+        <field name="Part Number">CMI-9655S-SMT-TR</field>
+        <field name="Manufacturer">CUI</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">490-CMI-9655S-SMT-TR</field>
+      </fields>
+      <libsource lib="cui-ml" part="CT-1205CL-SMT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C82912</tstamp>
+    </comp>
+    <comp ref="Q1">
+      <value>NUD3124</value>
+      <footprint>TO_SOT_Packages_SMD:TSOT-23</footprint>
+      <datasheet>https://www.onsemi.com/pub/Collateral/NUD3124-D.PDF</datasheet>
+      <fields>
+        <field name="Part Number">NUD3124LT1G</field>
+        <field name="Manufacturer">On Semi</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Vendor Part Number">863-NUD3124LT1G</field>
+      </fields>
+      <libsource lib="onsemi-ml" part="NUD3124"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58C82996</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="memory-ml" part="AT24CS32-SSHM">
+      <description>32Kb (4096x8) Serial EEPROM with Unique Serial Number, SOIC-8</description>
+      <docs>http://www.atmel.com/Images/Atmel-8869-SEEPROM-AT24CS32-Datasheet.pdf</docs>
+      <footprints>
+        <fp>SO8*</fp>
+        <fp>SOIC-8*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">AT24CS32-SSHM</field>
+        <field name="Footprint">SO8</field>
+        <field name="Datasheet">http://www.atmel.com/images/Atmel-8869-SEEPROM-AT24CS32-Datasheet.pdf</field>
+        <field name="Vendor Part Number">556-AT24CS32-SSHM-T</field>
+        <field name="Part Number">AT24CS32-SSHM</field>
+        <field name="Manufacturer">Atmel</field>
+        <field name="Vendor">Mouser</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A0" type="input"/>
+        <pin num="2" name="A1" type="input"/>
+        <pin num="3" name="A2" type="input"/>
+        <pin num="4" name="GND" type="power_in"/>
+        <pin num="5" name="SDA" type="BiDi"/>
+        <pin num="6" name="SCL" type="input"/>
+        <pin num="7" name="WP" type="input"/>
+        <pin num="8" name="VCC" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_01X02">
+      <description>Connector, single row, 01x02</description>
+      <footprints>
+        <fp>Pin_Header_Straight_1X02</fp>
+        <fp>Pin_Header_Angled_1X02</fp>
+        <fp>Socket_Strip_Straight_1X02</fp>
+        <fp>Socket_Strip_Angled_1X02</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X02</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_01X03">
+      <description>Connector, single row, 01x03</description>
+      <footprints>
+        <fp>Pin_Header_Straight_1X03</fp>
+        <fp>Pin_Header_Angled_1X03</fp>
+        <fp>Socket_Strip_Straight_1X03</fp>
+        <fp>Socket_Strip_Angled_1X03</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X03</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+        <pin num="3" name="P3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="cui-ml" part="CT-1205CL-SMT">
+      <description>Magnetic Buzzer, Indicator</description>
+      <footprints>
+        <fp>CMI-9655S*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">BZ</field>
+        <field name="Value">CT-1205CL-SMT</field>
+      </fields>
+      <pins>
+        <pin num="1" name="-" type="passive"/>
+        <pin num="2" name="+" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="C_Small">
+      <description>Unpolarized capacitor</description>
+      <footprints>
+        <fp>C?</fp>
+        <fp>C_????_*</fp>
+        <fp>C_????</fp>
+        <fp>SMD*_c</fp>
+        <fp>Capacitor*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C_Small</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="maxim-ml" part="MAX31850KATB">
+      <aliases>
+        <alias>MAX31850JATB</alias>
+        <alias>MAX31850NATB</alias>
+        <alias>MAX31850TATB</alias>
+        <alias>MAX31850EATB</alias>
+      </aliases>
+      <description>Cold Junction K-type Thermocouple Interface, 1-Wire, TDFN-10</description>
+      <docs>https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf</docs>
+      <footprints>
+        <fp>TDFN*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MAX31850KATB</field>
+        <field name="Footprint">Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="T-" type="passive"/>
+        <pin num="3" name="T+" type="passive"/>
+        <pin num="4" name="VCC" type="power_in"/>
+        <pin num="5" name="DQ" type="BiDi"/>
+        <pin num="6" name="AD0" type="input"/>
+        <pin num="7" name="AD1" type="output"/>
+        <pin num="8" name="AD2" type="output"/>
+        <pin num="9" name="AD3" type="output"/>
+        <pin num="11" name="EP" type="output"/>
+      </pins>
+    </libpart>
+    <libpart lib="onsemi-ml" part="NUD3124">
+      <description>Automotive Inductive Load Driver</description>
+      <footprints>
+        <fp>*SOT-23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">NUD3124</field>
+        <field name="Footprint">TO_SOT_Packages_SMD:TSOT-23</field>
+        <field name="Datasheet">https://www.onsemi.com/pub/Collateral/NUD3124-D.PDF</field>
+        <field name="Vendor Part Number">863-NUD3124LT1G</field>
+        <field name="Vendor">Mouser</field>
+        <field name="Part Number">NUD3124LT1G</field>
+        <field name="Manufacturer">On Semi</field>
+      </fields>
+      <pins>
+        <pin num="1" name="G" type="input"/>
+        <pin num="2" name="S" type="passive"/>
+        <pin num="3" name="D" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+        <fp>Resistor_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="raspberry-ml" part="RPi_GPIO">
+      <description>Raspberry Pi Hat GPIO</description>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">RPi_GPIO</field>
+      </fields>
+      <pins>
+        <pin num="1" name="3.3V" type="power_in"/>
+        <pin num="2" name="5V" type="power_in"/>
+        <pin num="3" name="GPIO02_SDA1_I2C" type="BiDi"/>
+        <pin num="4" name="5V" type="power_in"/>
+        <pin num="5" name="GPIO03_SCL1_I2C" type="BiDi"/>
+        <pin num="6" name="GND" type="power_in"/>
+        <pin num="7" name="GPIO04_GCLK" type="BiDi"/>
+        <pin num="8" name="GPIO14_TXD0" type="BiDi"/>
+        <pin num="9" name="GND" type="power_in"/>
+        <pin num="10" name="GPIO15_RXD0" type="BiDi"/>
+        <pin num="11" name="GPIO17" type="BiDi"/>
+        <pin num="12" name="GPIO18" type="BiDi"/>
+        <pin num="13" name="GPIO27" type="BiDi"/>
+        <pin num="14" name="GND" type="power_in"/>
+        <pin num="15" name="GPIO22" type="BiDi"/>
+        <pin num="16" name="GPIO23" type="BiDi"/>
+        <pin num="17" name="3.3V" type="power_in"/>
+        <pin num="18" name="GPIO24" type="BiDi"/>
+        <pin num="19" name="GPIO10_SPI_MOSI" type="BiDi"/>
+        <pin num="20" name="GND" type="power_in"/>
+        <pin num="21" name="GPIO09_SPI_MISO" type="BiDi"/>
+        <pin num="22" name="GPIO25" type="BiDi"/>
+        <pin num="23" name="GPIO11_SPI_CLK" type="BiDi"/>
+        <pin num="24" name="GPIO08_SPI_CE0_N" type="BiDi"/>
+        <pin num="25" name="GND" type="power_in"/>
+        <pin num="26" name="GPIO07_SPI_CE1_N" type="BiDi"/>
+        <pin num="27" name="ID_SD" type="BiDi"/>
+        <pin num="28" name="ID_SC" type="BiDi"/>
+        <pin num="29" name="GPIO05" type="BiDi"/>
+        <pin num="30" name="GND" type="power_in"/>
+        <pin num="31" name="GPIO06" type="BiDi"/>
+        <pin num="32" name="GPIO12" type="BiDi"/>
+        <pin num="33" name="GPIO13" type="BiDi"/>
+        <pin num="34" name="GND" type="power_in"/>
+        <pin num="35" name="GPIO19" type="BiDi"/>
+        <pin num="36" name="GPIO16" type="BiDi"/>
+        <pin num="37" name="GPIO26" type="BiDi"/>
+        <pin num="38" name="GPIO20" type="BiDi"/>
+        <pin num="39" name="GND" type="power_in"/>
+        <pin num="40" name="GPIO21" type="BiDi"/>
+      </pins>
+    </libpart>
+    <libpart lib="switches" part="SW_Push">
+      <description>Push button switch, generic, two pins</description>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">SW_Push</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="memory-ml">
+      <uri>/Users/mike/Documents/KiCAD/libraries/memory-ml.lib</uri>
+    </library>
+    <library logical="maxim-ml">
+      <uri>/Users/mike/Documents/KiCAD/libraries/maxim-ml.lib</uri>
+    </library>
+    <library logical="onsemi-ml">
+      <uri>/Users/mike/Documents/KiCAD/libraries/onsemi-ml.lib</uri>
+    </library>
+    <library logical="device">
+      <uri>/Library/Application Support/kicad/library/device.lib</uri>
+    </library>
+    <library logical="cui-ml">
+      <uri>/Users/mike/Documents/KiCAD/libraries/cui-ml.lib</uri>
+    </library>
+    <library logical="raspberry-ml">
+      <uri>/Users/mike/Documents/KiCAD/libraries/raspberry-ml.lib</uri>
+    </library>
+    <library logical="conn">
+      <uri>/Library/Application Support/kicad/library/conn.lib</uri>
+    </library>
+    <library logical="switches">
+      <uri>/Library/Application Support/kicad/library/switches.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(R4-Pad2)">
+      <node ref="U5" pin="7"/>
+      <node ref="R4" pin="2"/>
+      <node ref="SW1" pin="1"/>
+    </net>
+    <net code="2" name="+5V">
+      <node ref="J1" pin="4"/>
+      <node ref="J1" pin="2"/>
+      <node ref="BZ1" pin="1"/>
+    </net>
+    <net code="3" name="GND">
+      <node ref="C1" pin="1"/>
+      <node ref="C7" pin="2"/>
+      <node ref="U1" pin="6"/>
+      <node ref="U1" pin="1"/>
+      <node ref="U5" pin="4"/>
+      <node ref="P6" pin="3"/>
+      <node ref="U3" pin="7"/>
+      <node ref="U3" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="U1" pin="9"/>
+      <node ref="U1" pin="8"/>
+      <node ref="U1" pin="7"/>
+      <node ref="U4" pin="8"/>
+      <node ref="U4" pin="6"/>
+      <node ref="U4" pin="1"/>
+      <node ref="C6" pin="1"/>
+      <node ref="U3" pin="9"/>
+      <node ref="U3" pin="8"/>
+      <node ref="U5" pin="3"/>
+      <node ref="U5" pin="2"/>
+      <node ref="U5" pin="1"/>
+      <node ref="SW1" pin="2"/>
+      <node ref="J1" pin="14"/>
+      <node ref="J1" pin="30"/>
+      <node ref="J1" pin="20"/>
+      <node ref="J1" pin="9"/>
+      <node ref="J1" pin="6"/>
+      <node ref="J1" pin="39"/>
+      <node ref="J1" pin="25"/>
+      <node ref="J1" pin="34"/>
+      <node ref="U6" pin="9"/>
+      <node ref="U6" pin="8"/>
+      <node ref="U6" pin="1"/>
+      <node ref="C9" pin="1"/>
+      <node ref="U4" pin="9"/>
+      <node ref="Q1" pin="2"/>
+    </net>
+    <net code="4" name="+3V3">
+      <node ref="C6" pin="2"/>
+      <node ref="R2" pin="1"/>
+      <node ref="R1" pin="2"/>
+      <node ref="U1" pin="4"/>
+      <node ref="U5" pin="8"/>
+      <node ref="C9" pin="2"/>
+      <node ref="P6" pin="1"/>
+      <node ref="U3" pin="6"/>
+      <node ref="U3" pin="4"/>
+      <node ref="U6" pin="4"/>
+      <node ref="U6" pin="6"/>
+      <node ref="U6" pin="7"/>
+      <node ref="J1" pin="17"/>
+      <node ref="R4" pin="1"/>
+      <node ref="C4" pin="2"/>
+      <node ref="U4" pin="7"/>
+      <node ref="U4" pin="4"/>
+      <node ref="R3" pin="1"/>
+      <node ref="J1" pin="1"/>
+      <node ref="C7" pin="1"/>
+      <node ref="C1" pin="2"/>
+    </net>
+    <net code="5" name="/ALERT">
+      <node ref="Q1" pin="1"/>
+      <node ref="J1" pin="13"/>
+    </net>
+    <net code="6" name="Net-(BZ1-Pad2)">
+      <node ref="BZ1" pin="2"/>
+      <node ref="Q1" pin="3"/>
+    </net>
+    <net code="7" name="/ID_SD">
+      <node ref="J1" pin="27"/>
+      <node ref="R3" pin="2"/>
+      <node ref="U5" pin="5"/>
+    </net>
+    <net code="8" name="/ID_SC">
+      <node ref="J1" pin="28"/>
+      <node ref="U5" pin="6"/>
+      <node ref="R2" pin="2"/>
+    </net>
+    <net code="9" name="/W1">
+      <node ref="R1" pin="1"/>
+      <node ref="U1" pin="5"/>
+      <node ref="U6" pin="5"/>
+      <node ref="U4" pin="5"/>
+      <node ref="P6" pin="2"/>
+      <node ref="U3" pin="5"/>
+      <node ref="J1" pin="7"/>
+    </net>
+    <net code="10" name="/TC1-">
+      <node ref="U1" pin="2"/>
+      <node ref="C2" pin="2"/>
+      <node ref="P1" pin="2"/>
+    </net>
+    <net code="11" name="/TC1+">
+      <node ref="P1" pin="1"/>
+      <node ref="C2" pin="1"/>
+      <node ref="U1" pin="3"/>
+    </net>
+    <net code="12" name="Net-(J1-Pad33)">
+      <node ref="J1" pin="33"/>
+    </net>
+    <net code="13" name="Net-(J1-Pad23)">
+      <node ref="J1" pin="23"/>
+    </net>
+    <net code="14" name="Net-(J1-Pad32)">
+      <node ref="J1" pin="32"/>
+    </net>
+    <net code="15" name="Net-(J1-Pad22)">
+      <node ref="J1" pin="22"/>
+    </net>
+    <net code="16" name="Net-(J1-Pad12)">
+      <node ref="J1" pin="12"/>
+    </net>
+    <net code="17" name="Net-(J1-Pad31)">
+      <node ref="J1" pin="31"/>
+    </net>
+    <net code="18" name="Net-(J1-Pad21)">
+      <node ref="J1" pin="21"/>
+    </net>
+    <net code="19" name="Net-(J1-Pad11)">
+      <node ref="J1" pin="11"/>
+    </net>
+    <net code="20" name="Net-(J1-Pad40)">
+      <node ref="J1" pin="40"/>
+    </net>
+    <net code="21" name="Net-(J1-Pad10)">
+      <node ref="J1" pin="10"/>
+    </net>
+    <net code="22" name="Net-(J1-Pad8)">
+      <node ref="J1" pin="8"/>
+    </net>
+    <net code="23" name="Net-(J1-Pad5)">
+      <node ref="J1" pin="5"/>
+    </net>
+    <net code="24" name="Net-(J1-Pad3)">
+      <node ref="J1" pin="3"/>
+    </net>
+    <net code="25" name="Net-(J1-Pad29)">
+      <node ref="J1" pin="29"/>
+    </net>
+    <net code="26" name="Net-(J1-Pad19)">
+      <node ref="J1" pin="19"/>
+    </net>
+    <net code="27" name="Net-(J1-Pad38)">
+      <node ref="J1" pin="38"/>
+    </net>
+    <net code="28" name="Net-(J1-Pad18)">
+      <node ref="J1" pin="18"/>
+    </net>
+    <net code="29" name="Net-(J1-Pad37)">
+      <node ref="J1" pin="37"/>
+    </net>
+    <net code="30" name="Net-(J1-Pad36)">
+      <node ref="J1" pin="36"/>
+    </net>
+    <net code="31" name="Net-(J1-Pad26)">
+      <node ref="J1" pin="26"/>
+    </net>
+    <net code="32" name="Net-(J1-Pad16)">
+      <node ref="J1" pin="16"/>
+    </net>
+    <net code="33" name="Net-(J1-Pad35)">
+      <node ref="J1" pin="35"/>
+    </net>
+    <net code="34" name="Net-(J1-Pad15)">
+      <node ref="J1" pin="15"/>
+    </net>
+    <net code="35" name="Net-(J1-Pad24)">
+      <node ref="J1" pin="24"/>
+    </net>
+    <net code="36" name="/TC4-">
+      <node ref="P4" pin="2"/>
+      <node ref="C10" pin="2"/>
+      <node ref="U6" pin="2"/>
+    </net>
+    <net code="37" name="/TC4+">
+      <node ref="P4" pin="1"/>
+      <node ref="C10" pin="1"/>
+      <node ref="U6" pin="3"/>
+    </net>
+    <net code="38" name="Net-(U4-Pad11)">
+      <node ref="U4" pin="11"/>
+    </net>
+    <net code="39" name="Net-(U6-Pad11)">
+      <node ref="U6" pin="11"/>
+    </net>
+    <net code="40" name="/TC2-">
+      <node ref="P2" pin="2"/>
+      <node ref="C5" pin="2"/>
+      <node ref="U3" pin="2"/>
+    </net>
+    <net code="41" name="/TC2+">
+      <node ref="U3" pin="3"/>
+      <node ref="P2" pin="1"/>
+      <node ref="C5" pin="1"/>
+    </net>
+    <net code="42" name="Net-(U1-Pad11)">
+      <node ref="U1" pin="11"/>
+    </net>
+    <net code="43" name="/TC3-">
+      <node ref="C8" pin="2"/>
+      <node ref="P3" pin="2"/>
+      <node ref="U4" pin="2"/>
+    </net>
+    <net code="44" name="/TC3+">
+      <node ref="U4" pin="3"/>
+      <node ref="C8" pin="1"/>
+      <node ref="P3" pin="1"/>
+    </net>
+    <net code="45" name="Net-(U3-Pad11)">
+      <node ref="U3" pin="11"/>
+    </net>
+  </nets>
+</export>
