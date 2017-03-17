@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name raspberry-ml)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/raspberry-ml.pretty)(options "")(descr ""))
+  (lib (name Housings_DFN_QFN_ML)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/Housings_DFN_QFN_ML.pretty)(options "")(descr ""))
+  (lib (name cui-ml)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/cui-ml.pretty)(options "")(descr ""))
+)
