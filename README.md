@@ -6,6 +6,8 @@ This is a Raspberry Pi Zero pHat PCB that supports:
 
 PCB is designed in [KiCad](http://kicad-pcb.org) which is a great free EDA toolset and is based on [RPi_Zero_pHat_Template](https://github.com/mikelawrence/RPi_Zero_pHat_Template).
 
+Note: The MAX31850K parts have an exposed pad in the bottom which requires either a reflow oven or hot air to solder properly.
+
 ## Status
 * Rev 1.0 PCB has been ordered from OSH Park but it currently untested becuase the boards haven't arrived yet.
   * You can order parts from Mouser using this [shared BOM](http://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=7612d46eeb).
