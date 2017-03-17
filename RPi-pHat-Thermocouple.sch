@@ -311,7 +311,11 @@ P 4000 1700
 F 0 "U1" H 3700 2050 50  0000 L CNN
 F 1 "MAX31850K" H 4050 2050 50  0000 L CNN
 F 2 "Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm" H 4000 1700 50  0001 C CIN
-F 3 "" H 4000 1700 50  0000 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf" H 4000 1700 50  0001 C CNN
+F 4 "MAX31850KATB+" H 4000 1700 60  0001 C CNN "Part Number"
+F 5 "Maxim" H 4000 1700 60  0001 C CNN "Manufacturer"
+F 6 "Mouser" H 4000 1700 60  0001 C CNN "Vendor"
+F 7 "700-MAX31850KATB+" H 4000 1700 60  0001 C CNN "Vendor Part Number"
 	1    4000 1700
 	1    0    0    -1  
 $EndComp
@@ -389,7 +393,11 @@ P 4000 3400
 F 0 "U3" H 3700 3750 50  0000 L CNN
 F 1 "MAX31850K" H 4050 3750 50  0000 L CNN
 F 2 "Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm" H 4000 3400 50  0001 C CIN
-F 3 "" H 4000 3400 50  0000 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf" H 4000 3400 50  0001 C CNN
+F 4 "MAX31850KATB+" H 4000 3400 60  0001 C CNN "Part Number"
+F 5 "Maxim" H 4000 3400 60  0001 C CNN "Manufacturer"
+F 6 "Mouser" H 4000 3400 60  0001 C CNN "Vendor"
+F 7 "700-MAX31850KATB+" H 4000 3400 60  0001 C CNN "Vendor Part Number"
 	1    4000 3400
 	1    0    0    -1  
 $EndComp
@@ -467,7 +475,11 @@ P 4000 5100
 F 0 "U4" H 3700 5450 50  0000 L CNN
 F 1 "MAX31850K" H 4050 5450 50  0000 L CNN
 F 2 "Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm" H 4000 5100 50  0001 C CIN
-F 3 "" H 4000 5100 50  0000 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf" H 4000 5100 50  0001 C CNN
+F 4 "MAX31850KATB+" H 4000 5100 60  0001 C CNN "Part Number"
+F 5 "Maxim" H 4000 5100 60  0001 C CNN "Manufacturer"
+F 6 "Mouser" H 4000 5100 60  0001 C CNN "Vendor"
+F 7 "700-MAX31850KATB+" H 4000 5100 60  0001 C CNN "Vendor Part Number"
 	1    4000 5100
 	1    0    0    -1  
 $EndComp
@@ -545,7 +557,11 @@ P 4000 6800
 F 0 "U6" H 3700 7150 50  0000 L CNN
 F 1 "MAX31850K" H 4050 7150 50  0000 L CNN
 F 2 "Housings_DFN_QFN_ML:TDFN-10-1EP_3x4mm_Pitch0.5mm" H 4000 6800 50  0001 C CIN
-F 3 "" H 4000 6800 50  0000 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf" H 4000 6800 50  0001 C CNN
+F 4 "MAX31850KATB+" H 4000 6800 60  0001 C CNN "Part Number"
+F 5 "Maxim" H 4000 6800 60  0001 C CNN "Manufacturer"
+F 6 "Mouser" H 4000 6800 60  0001 C CNN "Vendor"
+F 7 "700-MAX31850KATB+" H 4000 6800 60  0001 C CNN "Vendor Part Number"
 	1    4000 6800
 	1    0    0    -1  
 $EndComp
@@ -793,7 +809,7 @@ Wire Wire Line
 Wire Wire Line
 	7050 4000 7050 5450
 Wire Wire Line
-	7050 4000 9600 4000
+	9600 4000 7050 4000
 Wire Wire Line
 	3400 1200 3300 1200
 Wire Wire Line
