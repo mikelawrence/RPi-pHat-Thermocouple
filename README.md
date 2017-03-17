@@ -8,6 +8,7 @@ PCB is designed in [KiCad](http://kicad-pcb.org) which is a great free EDA tools
 
 ## Status
 * Rev 1.0 PCB has been ordered from OSH Park but it currently untested becuase the boards haven't arrived yet.
+  * You can order parts from Mouser using this [shared BOM](http://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=7612d46eeb).
   * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/CVoI6Cf1).
 
 ## Board Preview
