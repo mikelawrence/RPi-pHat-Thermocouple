@@ -2,7 +2,7 @@
 This is a Raspberry Pi Zero pHat PCB that supports:
 * Four MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
 * DS18S20 1-Wire Thermometer for local pHat temperature
-* Magnetic Buzzer/Alert (Added with Rev 1.1)
+* Magnetic Buzzer/Alert
 
 PCB is designed in [KiCad](http://kicad-pcb.org) which is a great free EDA toolset and is based on [RPi_Zero_pHat_Template](https://github.com/mikelawrence/RPi_Zero_pHat_Template).
 
