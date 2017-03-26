@@ -9,9 +9,10 @@ PCB is designed in [KiCad](http://kicad-pcb.org) which is a great free EDA tools
 Note: The MAX31850K parts have an exposed pad in the bottom which requires either a reflow oven or hot air to solder properly.
 
 ## Status
-* Rev 1.0 PCB has been ordered from OSH Park but it currently untested becuase the boards haven't arrived yet.
-  * You can order parts from Mouser using this [shared BOM](http://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=7612d46eeb).
-  * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/CVoI6Cf1).
+* Rev 1.0 PCB has been ordered from OSH Park and tested.
+  * Discovered the linux kernel doesn't seem to support MAX31850K devices without a DS18S20 present also.
+  * Need to add a pulldown on the alert signal to prevent the Alert buzzer from sounding immediately on power on.
+  * Rev 1.0 will correct these changes.
 
 ## Board Preview
 <img src="meta/RPi-pHat-Thermocouple-brd.png" style="width:100%">
