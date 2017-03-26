@@ -14,8 +14,8 @@ Note: The MAX31850K parts have an exposed pad in the bottom which requires eithe
   * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/yY3koPan).
 * Rev 1.0 PCB has been ordered from OSH Park and tested.
   * Discovered the linux kernel doesn't seem to support MAX31850K devices without a DS18S20 present. The kernel detects the MAX31850K devices but does not create a w1_slave file to read the temperature. This is most likely a bug in the Linux W1 driver.
-  * Need to add a pulldown on the alert signal to prevent the Alert buzzer from sounding immediately on power on.
-  * Rev 1.0 will correct these changes.
+  * Need to add a pulldown on the alert signal to prevent the Alert buzzer from sounding on power on.
+  * Rev 1.1 will correct these changes.
 
 ## Board Preview
 <img src="meta/RPi-pHat-Thermocouple-brd.png" style="width:100%">
