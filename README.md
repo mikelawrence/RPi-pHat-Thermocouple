@@ -9,13 +9,15 @@ PCB is designed in [KiCad](http://kicad-pcb.org) which is a great free EDA tools
 Note: The MAX31850K parts have an exposed pad in the bottom which requires either a reflow oven or hot air to solder properly.
 
 ## Status
-* Rev 1.1 PCB has been ordered from OSH Park and is waiting for test.
+* Rev 1.2 PCB has been ordered from OSH Park but has NOT been tested yet.
+  * Discovered the MAX31850K's get a noisy reading about 0.1% of the time. This noise is typically within 5 C but sometimes is greater than 30 C. Adding capacitors did little to help the Rev 1.1 design so most of the 3.3V power was switched to a 3.3V LDO regulator in an attempt to reduce the noise on the 3.3V power seen by the MAX31850K's.
   * You can order parts from Mouser using this [shared BOM](http://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=7612d46eeb).
-  * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/yY3koPan).
+  * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/S5a4ZDvw).
+* Rev 1.1 PCB
+  * Added a pulldown on the alert signal to prevent the Alert buzzer from sounding on power on.
+  * Added an on board DS18S20.
 * Rev 1.0 PCB has been ordered from OSH Park and tested.
   * Discovered the linux kernel doesn't seem to support MAX31850K devices without a DS18S20 present. The kernel detects the MAX31850K devices but does not create a w1_slave file to read the temperature. This is most likely a bug in the Linux W1 driver.
-  * Need to add a pulldown on the alert signal to prevent the Alert buzzer from sounding on power on.
-  * Rev 1.1 will correct these changes.
 
 ## Board Preview
 <img src="meta/RPi-pHat-Thermocouple-brd.png" style="width:100%">

@@ -3,6 +3,7 @@ RPi-pHat-Thermocouple-BOM-export.csv
 *.bak
 *.kicad_pcb-bak
 *.save*
+.idea
 __pycache__\
 
 *.bak
