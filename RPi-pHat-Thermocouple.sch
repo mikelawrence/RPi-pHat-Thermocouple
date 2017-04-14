@@ -42,8 +42,8 @@ $Descr A 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "Raspberry Pi Zero Thermocouple pHat"
-Date "March 2017"
-Rev "1.1"
+Date "April 2017"
+Rev "1.2"
 Comp "Mike Lawrence"
 Comment1 "Rev1.1 Added U2 and R5."
 Comment2 "Rev1.2 Added Analog Power Supply"
