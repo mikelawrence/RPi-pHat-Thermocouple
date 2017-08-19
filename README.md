@@ -1,4 +1,4 @@
-# Raspberry Pi Thermocouple Hat
+# Raspberry Pi Zero Thermocouple pHat
 This is a Raspberry Pi Zero pHat PCB that supports:
 * Four MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
 * DS18S20 1-Wire Thermometer for local pHat temperature
