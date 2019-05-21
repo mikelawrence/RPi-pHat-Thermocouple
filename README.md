@@ -1,12 +1,10 @@
 # Raspberry Pi Zero Thermocouple pHat
 This is a Raspberry Pi Zero pHat PCB that supports:
-* Four MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
+* Three MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
 * DS18S20 1-Wire Thermometer for local pHat temperature
 * Magnetic Buzzer/Alert
 
-I keep an upright freezer in my garage and on two occasions I have had the freezer die without getting noticed for several days. IThis project is an attempt to solve my lack of constant oversight. MQTT is used to communicate with Home Assistant home automation software. The MQTT client/server model is very effective in this situation. Home Assistant will monitor the temperature and provide me with alerts so I can do something about the problem before all the food spoils.
-
-This PCB design uses my custom libraries available here [Mike's KiCad Libraries](https://github.com/mikelawrence/KiCad-Libraries).
+I keep an upright freezer in my garage and on two occasions I have had the freezer die without getting noticed for several days. This project is an attempt to solve my lack of constant oversight. MQTT is used to communicate with Home Assistant home automation software. The MQTT client/server model is very effective in this situation. Home Assistant will monitor the temperature and provide me with alerts so I can do something about the problem before all the food spoils.
 
 This PCB design is based on [RPi_Zero_pHat_Template](https://github.com/mikelawrence/RPi_Zero_pHat_Template).
 
@@ -35,6 +33,9 @@ For Bill of Materials generation I use my version of [KiBoM](https://github.com/
 ## Board Preview
 <img src="meta/RPi-pHat-Thermocouple-3D.png" style="width:100%">
 
+## Kicad Notes
+This PCB design uses my custom libraries available here [Mike's KiCad Libraries](https://github.com/mikelawrence/KiCad-Libraries).
+
 ## Design
 ### Input Power
 This pHat will safely power the Raspberry Pi and this board up to 650mA. The Barrel Jack will accept 11VAC or 6-17VDC. This input voltage is rectified and filtered and applied to a 5VDC Simpler Switcher module from Texas Instruments (LMZ21700). The output of this switcher is applied to the Raspberry Pi 5V through an ideal diode circuit which will prevent any problems when both the pHat and Raspberry Pi are powered simultaneously.
@@ -43,7 +44,7 @@ This pHat will safely power the Raspberry Pi and this board up to 650mA. The Bar
 Although the MAX38150K datasheet typical application circuit doesn't show the use of ferrite beads many designs seems to include them. That in combination with the larger than normal capacitor across the input will hopefully improve sampling errors even further.
 
 ## Raspberry Pi Setup
-This setup makes two key assumptions. First you are using Raspbian Jessie. Second Python3 is the target programming environment. Python3 should be installed by default but if it isn't run `sudo apt-get install python3-dev`.
+This setup makes two key assumptions. First you are using Raspbian Stretch. Second Python3 is the target programming environment. Install everything need by executing the following commands.
 
 ```
 sudo apt-get update
@@ -52,11 +53,16 @@ sudo pip3 install paho-mqtt
 ```
 
 ### Configure ID EEPROM
-Raspberry Pi Hats require an ID EEPROM with data that uniquely identifies every hat ever made. Start by cloning this repository on your Raspberry Pi, building the EEPROM tools, and make the the `eeprom_settings.eep` file.
-```
-cd ~/Documents
+Raspberry Pi Hats require an ID EEPROM with data that uniquely identifies every hat ever made. Start by cloning this repository on your Raspberry Pi.
+cd ~
+mkdir projects
+cd projects
 git clone https://github.com/mikelawrence/RPi-pHat-Thermocouple
-cd ~/Documents/RPi-pHat-Thermocouple/eeprom/
+```
+Next build the EEPROM tools, and make the the `eeprom_settings.eep` file.
+```
+```
+cd ~/projects/RPi-pHat-Thermocouple/eeprom/
 make all
 ./eepmake eeprom_settings.txt eeprom_settings.eep
 ```
@@ -100,7 +106,7 @@ It's time to reboot your Raspberry Pi with `sudo reboot`.
 ### Test the 1-Wire Temperature Sensors
 [Python3-w1thermsensor](https://github.com/timofurrer/w1thermsensor) is a nice 1-Wire python library that also supports command line reading of temperatures from 1-Wire devices. You should have already installed this package in the [Raspberry Pi Setup](#Raspberry-Pi-Setup) section.
 
-Now test the RGBW LED Controller HAT's DS18B20 temperature sensor using `w1thermsensor all`.
+Now test the three MAX38150Ks and single DS18B20 temperature sensor using `w1thermsensor all`.
 ```
 pi@raspberrypi:~/projects/RPi-pHat-Thermocouple/code $ w1thermsensor all
 Got temperatures of 5 sensors:
