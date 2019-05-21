@@ -1,11 +1,11 @@
-RPi-pHat-Thermocouple-BOM-export.csv
 *.numbers
 *.bak
 *.kicad_pcb-bak
 *.save*
+*.net
+*.csv
+*.xml
 .idea
 __pycache__\
 
-*.bak
-
-*.bak
+fp-info-cache

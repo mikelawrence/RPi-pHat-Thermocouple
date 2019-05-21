@@ -1,5 +1,5 @@
 (fp_lib_table
-  (lib (name raspberry-ml)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/raspberry-ml.pretty)(options "")(descr ""))
-  (lib (name Housings_DFN_QFN_ML)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/Housings_DFN_QFN_ML.pretty)(options "")(descr ""))
-  (lib (name cui-ml)(type KiCad)(uri /Users/mike/Documents/KiCAD/footprints/cui-ml.pretty)(options "")(descr ""))
+  (lib (name Buzzer_Beeper-ML)(type KiCad)(uri ${KIMLMOD}/Buzzer_Beeper-ML)(options "")(descr ""))
+  (lib (name Converter_DCDC-ML)(type KiCad)(uri ${KIMLMOD}/Converter_DCDC-ML)(options "")(descr ""))
+  (lib (name Package_DFN_QFN-ML)(type KiCad)(uri ${KIMLMOD}/Package_DFN_QFN-ML.pretty)(options "")(descr ""))
 )
