@@ -1,0 +1,14 @@
+[Unit]
+Description=Fridge Monitor
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u fridgemonitor.py
+WorkingDirectory=/home/pi/RPi-pHat-Thermocouple/code
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
