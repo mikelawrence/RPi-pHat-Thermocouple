@@ -52,7 +52,7 @@ Although the MAX38150K datasheet typical application circuit doesn't show the us
 
 ## Raspberry Pi Setup
 
-This setup makes several assumptions. First you are using Raspbian Buster. This software and instructions may work on other version of Raspbian but they have not been tested. Second Python3 is the target programming environment. It is also assumed that you are using the standard `pi` user. Otherwise you will have to edit the commands by replacing `/home/pi` with your user's home directory. Install everything needed by executing the following commands.
+This setup makes several assumptions. First you are using Raspbian Buster. This software and instructions most likely work on other versions of Raspbian but they have not been tested. Second Python3 is the target programming environment. It is also assumed that you are using the standard `pi` user. Otherwise you will have to edit the commands by replacing `/home/pi` with your user's home directory. Install everything needed by executing the following commands.
 
 ```text
 sudo apt-get update
@@ -60,19 +60,18 @@ sudo apt-get -y install git python3 python3-pip python3-rpi.gpio python3-w1therm
 sudo pip3 install paho-mqtt
 ```
 
-### Configure ID EEPROM
+### Get the repository from Github
 
-Raspberry Pi Hats require an ID EEPROM with data that uniquely identifies every hat ever made. Start by cloning this repository on your Raspberry Pi.
+Clone this repository from Github with the following commands.
 
 ```text
 cd /home/pi
 git clone https://github.com/mikelawrence/RPi-pHat-Thermocouple
-
 ```text
 
-Next build the EEPROM tools, and make the the `eeprom_settings.eep` file.
+### Configure ID EEPROM
 
-```
+Raspberry Pi Hats require an ID EEPROM with data that uniquely identifies every hat ever made. Build the EEPROM tools, and make the `eeprom_settings.eep` file.
 
 ```text
 cd /home/pi/RPi-pHat-Thermocouple/eeprom/
@@ -89,7 +88,7 @@ sudo ./eepflash.sh -w -f=eeprom_settings.eep -t=24c32
 You will see the following if writing to the EEPROM was successful.
 
 ```text
-This will attempt to talk to an eeprom at i2c address 0x50. Make sure there is an eeprom at this address.
+This will attempt to talk to an EEPROM at i2c address 0x50. Make sure there is an EEPROM at this address.
 This script comes with ABSOLUTELY no warranty. Continue only if you know what you are doing.
 Do you wish to continue? (yes/no): yes
 Writing...
@@ -102,7 +101,7 @@ Done.
 This is what you will see if there is a problem communicating with the EEPROM.
 
 ```text
-This will attempt to talk to an eeprom at i2c address 0x50. Make sure there is an eeprom at this address.
+This will attempt to talk to an EEPROM at i2c address 0x50. Make sure there is an EEPROM at this address.
 This script comes with ABSOLUTELY no warranty. Continue only if you know what you are doing.
 Do you wish to continue? (yes/no): yes
 Writing...
@@ -113,7 +112,7 @@ dd: error writing ‘/sys/class/i2c-adapter/i2c-3/3-0050/eeprom’: Connection t
 Error doing I/O operation.
 ```
 
-If you succesfuly wrote the EEPROM there is nothing else left to do here.
+If you successfully wrote the EEPROM there is nothing else left to do here.
 
 ### Setup Interfaces
 
