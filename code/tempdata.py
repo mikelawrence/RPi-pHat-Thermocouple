@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-#
 # Keeps a moving average of Temperature Sensor data
 #
 # Copyright (c) 2019 Mike Lawrence
@@ -11,16 +10,16 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 #
 import logging
 
@@ -29,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 class TempData:
     def __init__(self, maxlength):
-        """Keep track of temperature sensor data over time and provide average."""
+        """Keep track of temperature sensor data over time and average."""
         # Save maximum number of data points to store
         if not maxlength:
             # default length is 10
@@ -48,9 +47,10 @@ class TempData:
                 self._data.insert(0, temp)
                 self._count += 1
                 # prevent list from exceed maxlength
-                # if maxlength is 0 then number fo samples stored will never be truncated
+                # if maxlength is 0 then number fo samples stored will 
+                #   never be truncated
                 if self._maxlength > 0 and len(self._data) > self._maxlength:
-                    # pop the data from the right side of the list (oldest side)
+                    # pop the data from the right side of list (oldest side)
                     self._data.pop()
                     self._count -= 1     
     

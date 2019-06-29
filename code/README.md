@@ -65,8 +65,8 @@ It is assumed that you already followed the instructions in the Raspberry Pi Set
 
 ```text
 cd /home/pi/RPi-pHat-Thermocouple/code/
-chmod 755 fridgemonitor.py
-./fridgemonitor.py
+chmod 755 rgbfloodlight.py
+./rgbfloodlight.py
 ```
 
 If you see no errors you should be able to see your light in Home Assistant. Configuring Home Assistant is a bit of a stretch for this guide but here are a couple of hints.
