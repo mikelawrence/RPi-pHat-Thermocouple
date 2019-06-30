@@ -1,11 +1,14 @@
 # Fridge Monitor Application
 
-The Fridge Monitor application is written in Python 3 and supports the hardware elements of the Raspberry Pi Zero Thermocouple pHat which can measure up to 3 thermocouple temperatures. The application is discoverable by [Home Assistant](https://home-assistant.io/), an open-source home automation platform also running Python 3. [MQTT](http://mqtt.org/), a machine-to-machine (M2M)/"Internet of Things" connectivity protocol, is the basis of communication with Home Assistant.
+The Fridge Monitor application is written in Python 3 and supports the hardware elements of the Raspberry Pi Zero Thermocouple pHat which can measure up to 3 thermocouple temperatures. The main function is to monitor the temperatures inside a refridgerator/freezer. These temperatures are reported at a configurable rate. If the temperatures rise above a configurable set point the application will set an alarm. The application is discoverable by [Home Assistant](https://home-assistant.io/), an open-source home automation platform also running Python 3. [MQTT](http://mqtt.org/), a machine-to-machine (M2M)/"Internet of Things" connectivity protocol, is the basis of communication with Home Assistant.
 
 ## Configuration Notes
+
 All settings for this application are in the '[fridgemonitor.conf](fridgemonitor.conf)'. This is where you point to the correct MQTT broker and configure how the temperature sensors work. There are a few settings of note here. Discovery_Enabled = false will prevent Home Assistant from automatically discovering the Fridge Monitor.
 
 ## Home Assistant Notes
+
+When Discovery is enabled Home Assistant will automatically pick up the Alarm Disable switch, Alarm binary_sensor, RSSI sensor, and four temperature sensors. The is a DS18S20 1-Wire Thermometer on the board and three thermocouple inputs for measuring temperature remotely with thermocouple wire.
 
 If you don't want to use discovery here is the configuration of the Fridge Monitor in Home Assistant. Note the 'studio_fridge_monitor' you see in the example yaml is the Node_ID which is specified in the 'fridgemonitor.conf' file.
 
@@ -16,9 +19,9 @@ switch:
       # This switch provides a means to turn off both the audible alert and alarm boolean_sensor
       #   This switch will automatically turn back OFF at 6PM every day.
       name: "Studio Fridge Monitor Alert Disable"
-        state_topic: "hass/switch/studio_fridge_monitor/alert_disable/state"
-        command_topic: "hass/switch/studio_fridge_monitor/alert_disable/set"
-        availability_topic: "hass/switch/studio_fridge_monitor/status"
+        state_topic: "homeassistant/switch/studio_fridge_monitor/alert_disable/state"
+        command_topic: "homeassistant/switch/studio_fridge_monitor/alert_disable/set"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
         qos: 1
 # The following sensors are updated at Sensor_Publish_Rate specified in the frigdemonitor.conf file
 sensor:
@@ -26,36 +29,36 @@ sensor:
     sensors:
         # WiFi Received Signal Strength Indicator (RSSI)
         name: "Studio Fridge Monitor RSSI"
-            state_topic: "hass/sensor/studio_fridge_monitor/rssi/state"
-            availability_topic: "hass/switch/studio_fridge_monitor/status"
+            state_topic: "homeassistant/sensor/studio_fridge_monitor/rssi/state"
+            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
             unit_of_measurement: 'dBm'
         # Temperature measured by the on-board DS18S20 Sensor
         name: "Studio Fridge Monitor Temperature"
-            state_topic: "hass/sensor/studio_fridge_monitor/temperature/state"
-            availability_topic: "hass/switch/studio_fridge_monitor/status"
+            state_topic: "homeassistant/sensor/studio_fridge_monitor/temperature/state"
+            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
             unit_of_measurement: '°C'
         # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC1)
         name: "Studio Fridge Temperature"
-            state_topic: "hass/sensor/studio_fridge_monitor/TC1_temperature/state"
-            availability_topic: "hass/switch/studio_fridge_monitor/status"
+            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC1_temperature/state"
+            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
             unit_of_measurement: '°C'
         # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC2)
         name: "Studio Freezer Temperature"
-            state_topic: "hass/sensor/studio_fridge_monitor/TC2_temperature/state"
-            availability_topic: "hass/switch/studio_fridge_monitor/status"
+            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC2_temperature/state"
+            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
             unit_of_measurement: '°C'
         # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC3)
-        name: "Studio Freezer Temperature 2"
-            state_topic: "hass/sensor/studio_fridge_monitor/TC3_temperature/state"
-            availability_topic: "hass/switch/studio_fridge_monitor/status"
+        name: "Studio Fridge Compressor Temperature"
+            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC3_temperature/state"
+            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
             unit_of_measurement: '°C'
 binary_sensor:
   - platform: mqtt
     sensors:
       # When active the Fridge Monitor has detected an over temperature condition
       name: "Studio Fridge Monitor Alarm"
-        state_topic: "hass/binary_sensor/studio_fridge_monitor/alarm/state"
-        availability_topic: "hass/switch/studio_fridge_monitor/status"
+        state_topic: "homeassistant/binary_sensor/studio_fridge_monitor/alarm/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/status"
         device_class: "heat"
 ```
 
@@ -65,25 +68,18 @@ It is assumed that you already followed the instructions in the Raspberry Pi Set
 
 ```text
 cd /home/pi/RPi-pHat-Thermocouple/code/
-chmod 755 rgbfloodlight.py
-./rgbfloodlight.py
+chmod 755 fridgemonitor.py
+./fridgemonitor.py
 ```
 
-If you see no errors you should be able to see your light in Home Assistant. Configuring Home Assistant is a bit of a stretch for this guide but here are a couple of hints.
+If you see no errors you should be able to see one switch, one binary_sensor, and four sensors in Home Assistant. Configuring Home Assistant is a bit of a stretch for this guide but here are a couple of hints.
 
-* "Fridge Monitor: Failed to load state file 'fridgemonitorstate.json'." means there is no previous state for the light. This is perfectly normal when the code is run for the first time.
+* "Fridge Monitor: Failed to load state file 'fridgemonitor.json'." means there is no previous state for the light. This is perfectly normal when the code is run for the first time.
 * Make sure you have MQTT installed. If you use HASS.IO goto the HASS.IO configuration and install the Mosquitto Broker.
 * Make sure you have MQTT discovery enabled. See [MQTT Discovery](https://home-assistant.io/docs/mqtt/discovery/).
 * Make sure your MQTT discovery prefix matches the Discovery_Prefix in your Fridge Monitor configuration file.
 
-I use HASS.IO with the Mosquitto Broker add-on installed and my configuration for MQTT is as follows...
-
-```yaml
-mqtt:
-  broker: core-mosquitto
-  discovery: true
-  discovery_prefix: hass
-```
+Installing a MQTT server is easy if you are running Hass.io, just look for the Mosquitto Broker in the Add_On Store.
 
 ## Systemd run at boot
 
