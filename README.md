@@ -1,9 +1,11 @@
-# Raspberry Pi Zero Thermocouple pHat
+# Raspberry Pi Thermocouple uHat
 
-This is a Raspberry Pi Zero pHat PCB that supports:
+The Raspberry Pi Zero sized Hats are now officially called **Micro-Hats** or **uHats**.
+
+This is a Raspberry Pi uHat PCB that supports:
 
 * Three MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
-* DS18S20 1-Wire Thermometer for local pHat temperature
+* DS18S20 1-Wire Thermometer for local Hat temperature
 * Magnetic Buzzer/Alert
 
 I keep an upright freezer in my garage and on two occasions I have had the freezer die without getting noticed for several days. This project is an attempt to solve my lack of constant oversight. MQTT is used to communicate with Home Assistant home automation software. The MQTT client/server model is very effective in this situation. Home Assistant will monitor the temperature and provide me with alerts so I can do something about the problem before all the food spoils.
@@ -14,7 +16,7 @@ I keep an upright freezer in my garage and on two occasions I have had the freez
   * Removed one of the four MAX31850K's.
   * Increased thermocouple input filtering buy adding ferrite beads and a larger capacitor.
   * Added more filtering to thermocouple side of MAX31850K's.
-  * Added DC Power connector and switching power supply that powers both the Raspberry Pi and the pHat.
+  * Added DC Power connector and switching power supply that powers both the Raspberry Pi and the Hat.
   * The noisy reading the MAX31850K's occasionaly get are reduced in this version but not gone.
   * You can order parts from Mouser using this [shared BOM](https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=bd69c35967).
   * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/S5a4ZDvw).
@@ -44,7 +46,7 @@ I keep an upright freezer in my garage and on two occasions I have had the freez
 
 ### Input Power
 
-This pHat will safely power the Raspberry Pi and this board up to 650mA. Keep in mind that 650mA is not enough for the minimum specified backpower of 1.3A. It is however enough to power (with room to spare) a Raspberry Pi Zero W with nothing else connected. The Barrel Jack will accept 6-11VAC or 6-17VDC. This input voltage is rectified and filtered and applied to a 5VDC Simpler Switcher module from Texas Instruments (LMZ21700). The output of this switcher is applied to the Raspberry Pi 5V through an ideal diode circuit which will prevent any problems when both the pHat and Raspberry Pi are powered simultaneously.
+This Hat will safely power the Raspberry Pi and this board up to 650mA. Keep in mind that 650mA is not enough for the minimum specified backpower of 1.3A. It is however enough to power (with room to spare) a Raspberry Pi Zero W with nothing else connected. The Barrel Jack will accept 6-11VAC or 6-17VDC. This input voltage is rectified and filtered and applied to a 5VDC Simpler Switcher module from Texas Instruments (LMZ21700). The output of this switcher is applied to the Raspberry Pi 5V through an ideal diode circuit which will prevent any problems when both the Hat and Raspberry Pi are powered simultaneously.
 
 ### MAX31850K Thermocouple-to-Digital Converter
 
@@ -67,7 +69,7 @@ Clone this repository from Github with the following commands.
 ```text
 cd /home/pi
 git clone https://github.com/mikelawrence/RPi-pHat-Thermocouple
-```
+```text
 
 ### Configure ID EEPROM
 
@@ -82,6 +84,7 @@ make all
 The next command writes the freshly generated and unique `eeprom_settings.eep` file to the EEPROM but you must push and hold the write switch on the hat before executing this command. By default the EEPROM on the hat is write protected. Pushing the write switch allows writes to occur while the switch is pushed.
 
 ```text
+chmod 755 eepflash.sh
 sudo ./eepflash.sh -w -f=eeprom_settings.eep -t=24c32
 ```
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Reads temperatures from Thermocouple pHat by Mike Lawrence.
+# Reads temperatures from Raspberry Pi Thermocouple uHat by Mike Lawrence.
 # Takes temperature averages and publishes to MQTT server.
 # Supports Home Assistant MQTT Discovery directly.
 #
@@ -102,15 +102,15 @@ def queueSaveStateFile(state):
     SaveStateTimer.start()
 
 def buzzer_on():
-    """Turns ON alert buzzer on Thermocouple pHat."""
+    """Turns ON alert buzzer on Thermocouple uHat."""
     GPIO.output(ALERT, GPIO.HIGH)
 
 def buzzer_off():
-    """Turns OFF alert buzzer on Thermocouple pHat."""
+    """Turns OFF alert buzzer on Thermocouple Hat."""
     GPIO.output(ALERT, GPIO.LOW)
 
 def buzzer_beep(beeptime):
-    """Turns ON alert buzzer on pHat for a period of time in seconds.
+    """Turns ON alert buzzer on uHat for a period of time in seconds.
     
         :time: Time in seconds to beep (float).
     """
@@ -305,6 +305,36 @@ def mqtt_subscribe():
 
 # Main program starts here
 try:
+    # verify the uHat exists
+    if not os.path.isdir("/proc/device-tree/hat"):
+        sys.exit("Fridge Monitor: Error, No Hat detected.")
+
+    # get hat information
+    with open("/proc/device-tree/hat/product", 'r') as f:
+        hat_product = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/vendor", 'r') as f:
+        hat_vendor = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/product_id", 'r') as f:
+        hat_productid = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/product_ver", 'r') as f:
+        hat_version = f.readline(100).rstrip('\x00')
+        hat_version = int(hat_version, 16)
+    with open("/proc/device-tree/hat/uuid", 'r') as f:
+        hat_uuid = f.read()
+
+    print("id={} ver={}".format(hat_productid, hat_version))
+    # hat is present make sure it is the right one
+    if not hat_product == "Raspberry Pi Thermocouple uHat":
+        sys.exit("Fridge Monitor: Error, Found incorrect hat " + 
+            "{}.".format(hat_product))     
+    if not hat_vendor == "Mike Lawrence":
+        sys.exit("Fridge Monitor: Error, Found incorrect hat " + 
+            "{}.".format(hat_product))
+        
+    # we found a Raspberry Pi Thermocouple uHat
+    print("Fridge Monitor: Found Raspberry Pi Thermocouple uHat, " +
+        "Rev {}.{}".format(hat_version//256, hat_version%256))
+
     # initialize board
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)

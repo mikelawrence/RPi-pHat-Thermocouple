@@ -2,15 +2,7 @@
 # EEPROM settings text file
 #
 # This text file has been modifed for the
-#  Raspberry Pi Zero Thermocouple pHat Rev 2.0
-#
-# Edit this file for your particular board and run through eepmake tool,
-# then use eepflash tool to write to attached HAT ID EEPROM
-#
-# Tools available:
-#  eepmake   Parses EEPROM text file and creates binary .eep file
-#  eepdump   Dumps a binary .eep file as human readable text (for debug)
-#  eepflash  Write or read .eep binary image to/from HAT EEPROM
+#  Raspberry Pi Thermocouple uHat Rev 2.0
 #
 ########################################################################
 
@@ -31,8 +23,7 @@ product_ver 0x0200
 vendor "Mike Lawrence"
 
 # ASCII product string (max 255 characters)
-product "RPi Zero Thermocouple pHat"
-
+product "Raspberry Pi Thermocouple uHat"
 
 ########################################################################
 # GPIO bank settings, set to nonzero to change from the default.
