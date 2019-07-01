@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Reads temperatures from Raspberry Pi Thermocouple uHat by Mike Lawrence.
+# Reads temperatures from Raspberry Pi Thermocouple pHat by Mike Lawrence.
 # Takes temperature averages and publishes to MQTT server.
 # Supports Home Assistant MQTT Discovery directly.
 #
@@ -102,7 +102,7 @@ def queueSaveStateFile(state):
     SaveStateTimer.start()
 
 def buzzer_on():
-    """Turns ON alert buzzer on Thermocouple uHat."""
+    """Turns ON alert buzzer on Thermocouple Hat."""
     GPIO.output(ALERT, GPIO.HIGH)
 
 def buzzer_off():
@@ -110,7 +110,7 @@ def buzzer_off():
     GPIO.output(ALERT, GPIO.LOW)
 
 def buzzer_beep(beeptime):
-    """Turns ON alert buzzer on uHat for a period of time in seconds.
+    """Turns ON alert buzzer on Hat for a period of time in seconds.
     
         :time: Time in seconds to beep (float).
     """
@@ -305,7 +305,7 @@ def mqtt_subscribe():
 
 # Main program starts here
 try:
-    # verify the uHat exists
+    # verify the pHat exists
     if not os.path.isdir("/proc/device-tree/hat"):
         sys.exit("Fridge Monitor: Error, No Hat detected.")
 
@@ -324,15 +324,15 @@ try:
 
     print("id={} ver={}".format(hat_productid, hat_version))
     # hat is present make sure it is the right one
-    if not hat_product == "Raspberry Pi Thermocouple uHat":
-        sys.exit("Fridge Monitor: Error, Found incorrect hat " + 
+    if not hat_product == "Raspberry Pi Thermocouple pHat":
+        sys.exit("Fridge Monitor: Error, Found incorrect Hat " + 
             "{}.".format(hat_product))     
     if not hat_vendor == "Mike Lawrence":
-        sys.exit("Fridge Monitor: Error, Found incorrect hat " + 
+        sys.exit("Fridge Monitor: Error, Found incorrect Hat " + 
             "{}.".format(hat_product))
         
-    # we found a Raspberry Pi Thermocouple uHat
-    print("Fridge Monitor: Found Raspberry Pi Thermocouple uHat, " +
+    # we found a Raspberry Pi Thermocouple pHat
+    print("Fridge Monitor: Found Raspberry Pi Thermocouple pHat, " +
         "Rev {}.{}".format(hat_version//256, hat_version%256))
 
     # initialize board
@@ -619,6 +619,7 @@ try:
             # look for Changed but only if connected
             if Changed and Mqttconnected:
                 # create payload for alarm disabled state
+
                 if NextState['alarm_disable']:
                     payload = 'ON'
                 else:
