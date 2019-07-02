@@ -1,8 +1,8 @@
-# Raspberry Pi Thermocouple uHat
+# Raspberry Pi Thermocouple pHat
 
-The Raspberry Pi Zero sized Hats are now officially called **Micro-Hats** or **uHats**.
+The Raspberry Pi Zero sized Hats are now officially called **Micro-Hats** or **uHats** but for consistency sake, this board's name will remain Raspberry Pi Thermocouple **pHat**.
 
-This is a Raspberry Pi uHat PCB that supports:
+This is a Raspberry Pi Micro-Hat PCB that supports:
 
 * Three MAX31850 1-Wire Thermocouple Converters for remote temperature sensing
 * DS18S20 1-Wire Thermometer for local Hat temperature

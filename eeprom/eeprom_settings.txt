@@ -2,7 +2,7 @@
 # EEPROM settings text file
 #
 # This text file has been modifed for the
-#  Raspberry Pi Thermocouple uHat Rev 2.0
+#  Raspberry Pi Thermocouple pHat Rev 2.0
 #
 ########################################################################
 
@@ -23,7 +23,7 @@ product_ver 0x0200
 vendor "Mike Lawrence"
 
 # ASCII product string (max 255 characters)
-product "Raspberry Pi Thermocouple uHat"
+product "Raspberry Pi Thermocouple pHat"
 
 ########################################################################
 # GPIO bank settings, set to nonzero to change from the default.
