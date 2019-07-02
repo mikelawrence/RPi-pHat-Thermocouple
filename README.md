@@ -1,6 +1,6 @@
-# Raspberry Pi Thermocouple Micro-Hat
+# Raspberry Pi Thermocouple pHat
 
-The Raspberry Pi Zero sized Hats are now officially called **Micro-Hats** or **uHats**.
+The Raspberry Pi Zero sized Hats are now officially called **Micro-Hats** or **uHats** but for consistency sake, this board's name will remain Raspberry Pi Thermocouple **pHat**.
 
 This is a Raspberry Pi Micro-Hat PCB that supports:
 
@@ -69,7 +69,7 @@ Clone this repository from Github with the following commands.
 ```text
 cd /home/pi
 git clone https://github.com/mikelawrence/RPi-pHat-Thermocouple
-```
+```text
 
 ### Configure ID EEPROM
 
@@ -84,6 +84,7 @@ make all
 The next command writes the freshly generated and unique `eeprom_settings.eep` file to the EEPROM but you must push and hold the write switch on the hat before executing this command. By default the EEPROM on the hat is write protected. Pushing the write switch allows writes to occur while the switch is pushed.
 
 ```text
+chmod 755 eepflash.sh
 sudo ./eepflash.sh -w -f=eeprom_settings.eep -t=24c32
 ```
 
