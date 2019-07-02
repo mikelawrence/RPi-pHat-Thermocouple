@@ -22,19 +22,22 @@
 # THE SOFTWARE.
 #
 import logging
+# logging.basicConfig(format='Fridge Monitor: %(message)s', level=logging.DEBUG)
 
 # logger for this module
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
 
 class TempData:
-    def __init__(self, maxlength):
+    def __init__(self, maxlength, name = ""):
         """Keep track of temperature sensor data over time and average."""
-        # Save maximum number of data points to store
+        # save maximum number of data points to store
         if not maxlength:
             # default length is 10
             self._maxlength = 10
         else:
             self._maxlength = maxlength
+        # local copy of sensor name
+        self._name = name
         # create empty list for incoming data
         self._data = []
         self._count = 0
@@ -52,20 +55,24 @@ class TempData:
                 if self._maxlength > 0 and len(self._data) > self._maxlength:
                     # pop the data from the right side of list (oldest side)
                     self._data.pop()
-                    self._count -= 1     
-    
+                    self._count -= 1
+        else:
+            logging.debug(f"Debug, {self._name} add NaN thrown out.")    
     def average(self):
         """Get the average of all stored temperature samples."""
         sum = 0
         # loop through all temperature samples
         for temp in self._data:
             sum += temp
+        logging.debug(f"Debug, {self._name} "
+            f"average {round(sum / self._count, 1)}.")
         return sum / self._count
     
     def clear(self):
         """Clear all stored temperature samples."""
+        logging.debug(f"Debug, {self._name} clear {self._count} samples.")
         self._count = 0
-        self._data = []
+        self._data = [] 
 
     def len(self):
         """Returns the number of stored temperature samples."""

@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Reads temperatures from Thermocouple pHat by Mike Lawrence.
+# Reads temperatures from Raspberry Pi Thermocouple pHat by Mike Lawrence.
 # Takes temperature averages and publishes to MQTT server.
 # Supports Home Assistant MQTT Discovery directly.
 #
 # The MIT License (MIT)
-#
+# 
 # Copyright (c) 2019 Mike Lawrence
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,11 +28,10 @@
 # THE SOFTWARE.
 
 # Can enable debug output by uncommenting:
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
+import logging
+logging.basicConfig(format='Fridge Monitor: %(message)s', level=logging.DEBUG)
 
 import threading
-import logging
 import os
 import sys
 import signal
@@ -50,8 +49,6 @@ import RPi.GPIO as GPIO
 
 from timer import InfiniteTimer
 from tempdata import TempData
-
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARNING"))
 
 # User configurable values
 ENABLE_AVAILABILITY_TOPIC = True
@@ -85,7 +82,7 @@ def saveStateFile():
     global SaveState
     with open(STATEFILE, 'w') as outfile:
         json.dump(SaveState, outfile)
-    print("Fridge Monitor: Updated current state file '%s'." % STATEFILE)
+    logging.info("Updated current state file %s.", STATEFILE)
 
 def queueSaveStateFile(state):
     """Queue save state to file while preventing frequent writes to Flash."""
@@ -102,15 +99,15 @@ def queueSaveStateFile(state):
     SaveStateTimer.start()
 
 def buzzer_on():
-    """Turns ON alert buzzer on Thermocouple pHat."""
+    """Turns ON alert buzzer on Thermocouple Hat."""
     GPIO.output(ALERT, GPIO.HIGH)
 
 def buzzer_off():
-    """Turns OFF alert buzzer on Thermocouple pHat."""
+    """Turns OFF alert buzzer on Thermocouple Hat."""
     GPIO.output(ALERT, GPIO.LOW)
 
 def buzzer_beep(beeptime):
-    """Turns ON alert buzzer on pHat for a period of time in seconds.
+    """Turns ON alert buzzer on Hat for a period of time in seconds.
     
         :time: Time in seconds to beep (float).
     """
@@ -219,14 +216,13 @@ def mqtt_on_message(mqttc, obj, msg):
             elif payload.lower() == 'off':
                 NextState['alarm_disable'] = False
             else:
-                print("Fridge Monitor: Unknown Alarm Disable command " + 
-                    "payload '{}'.".format(payload))
+                logging.warning("Warning, unknown Alarm Disable " +
+                    "command payload '%s'.",payload)
             if CurState['alarm_disable'] != NextState['alarm_disable']:
                 Changed = True
     else:
-        print("Fridge Monitor: Received unknown command " +
-            "topic '{}', with payload ".format(msg.topic) +
-              "'{}'.".format(msg.payload.decode("utf-8")))
+        logging.warning("Warning, unknown command topic '%s', " +
+            "with payload '%s'.", msg.topic, msg.payload.decode("utf-8"))
 
 def mqtt_on_connect(mqttc, userdata, flags, rc):
     """Handle MQTT connection events.
@@ -235,8 +231,8 @@ def mqtt_on_connect(mqttc, userdata, flags, rc):
     global Changed, Mqttconnected
     if rc == 0:
         # connection was successful
-        print("Fridge Monitor: Connected to MQTT broker: "
-              "mqtt://{}:{}".format(mqttc._host, mqttc._port))
+        logging.info("Connected to MQTT broker: mqtt://%s:%s.",
+            mqttc._host, mqttc._port)
         # publish node configs if discovery is on
         if Config.getboolean('Home Assistant', 'Discovery_Enabled'):
             # discovery is enabled so publish config data
@@ -265,16 +261,11 @@ def mqtt_on_connect(mqttc, userdata, flags, rc):
             for i in range(0, 4):
                 mqttc.publish("/".join([TopicTemp[i], 'config']),
                     payload="", qos=QOS, retain=False)
-        # update availability
-        if ENABLE_AVAILABILITY_TOPIC == True:
-            mqttc.publish(TopicAvailability, 
-                payload=PayloadAvailable, qos=QOS, retain=True)
-        else:
-            # when availability is not enabled clear the topic
-            mqttc.publish(TopicAvailability, 
-                payload="", qos=QOS, retain=True)
         # subscribe to Alarm Disable Switch command topic
         mqttc.subscribe(ConfigAlarmDisable['cmd_t'])
+        # update availability
+        mqttc.publish(TopicAvailability, payload=PayloadAvailable, 
+            qos=QOS, retain=True)
         # indicate we are now connected
         Mqttconnected = True
         # force update of states
@@ -283,12 +274,11 @@ def mqtt_on_connect(mqttc, userdata, flags, rc):
         # connection failed
         if rc == 5:
             # MQTT Authentication failed
-            print("Fridge Monitor: MQTT authentication failed: " +
-                "mqtt://{}:{}".format(mqttc._host, mqttc._port))
+            print("MQTT authentication failed: " +
+                "mqtt://%s:%s".format(mqttc._host, mqttc._port))
         else:
-            print("Fridge Monitor: MQTT_ERR={}:".format(rc) +
-                " Failed to connect to broker: mqtt://{}:{}".format(
-                mqttc._host, mqttc._port))
+            print("MQTT_ERR=%s: Failed to connect to broker: mqtt://%s:%s.",
+                rc, mqttc._host, mqttc._port)
 
 def mqtt_on_disconnect(client, userdata, rc):
     """Handle MQTT disconnect events.
@@ -305,6 +295,36 @@ def mqtt_subscribe():
 
 # Main program starts here
 try:
+    # verify the pHat exists
+    if not os.path.isdir("/proc/device-tree/hat"):
+        logging.error("Error, No Hat detected.")
+        sys.exit()     
+
+    # get hat information
+    with open("/proc/device-tree/hat/product", 'r') as f:
+        hat_product = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/vendor", 'r') as f:
+        hat_vendor = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/product_id", 'r') as f:
+        hat_productid = f.readline(100).rstrip('\x00')
+    with open("/proc/device-tree/hat/product_ver", 'r') as f:
+        hat_version = f.readline(100).rstrip('\x00')
+        hat_version = int(hat_version, 16)
+    with open("/proc/device-tree/hat/uuid", 'r') as f:
+        hat_uuid = f.read()
+
+    # hat is present make sure it is the right one
+    if not hat_product == "Raspberry Pi Thermocouple pHat":
+        logging.error("Error, Found incorrect Hat: %s.", hat_product)
+        sys.exit()     
+    if not hat_vendor == "Mike Lawrence":
+        logging.error("Error, Found incorrect Hat: %s.", hat_product)
+        sys.exit()     
+        
+    # we found a Raspberry Pi Thermocouple pHat
+    logging.info("Found Raspberry Pi Thermocouple pHat, Rev %s.%s.", 
+        hat_version//256, hat_version%256)
+
     # initialize board
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
@@ -313,8 +333,8 @@ try:
 
     # load config file
     if not os.path.isfile(CONFFILE):
-        sys.exit("Fridge Monitor: '{}' config file is missing.".format(
-            CONFFILE))
+        logging.error("Config file is missing %s.", hat_product)
+        sys.exit()
     Config = configparser.ConfigParser(
         defaults = {
             'Broker': '127.0.0.1',
@@ -344,10 +364,10 @@ try:
     TC_Count = Config['Temperature Sensors'].getint('TC_Count')
     if TC_Count < 1:
         TC_Count = 1
-        print("Fridge Monitor: Config file 'TC_Count' less than 1. Set to 1.")
+        logging.info("Config file 'TC_Count' less than 1. Set to 1.")
     if TC_Count > 3:
         TC_Count = 3
-        print("Fridge Monitor: Config file 'TC_Count' greater than 3. " +
+        logging.warning("Warning, config file 'TC_Count' greater than 3. " +
             "Set to 3.")
     # update TC_Count in Config
     Config['Temperature Sensors']['TC_Count'] = str(TC_Count)
@@ -356,8 +376,8 @@ try:
         'Sensor_Publish_Rate')
     if Sensor_Publish_Rate < 60:
         Sensor_Publish_Rate = 60
-        print("Fridge Monitor: Config file 'Sensor_Publish_Rate' less" + 
-            " than 60 seconds. Set to 60.")
+        logging.warning("Warning, config file 'Sensor_Publish_Rate' less " + 
+            "than 60 seconds. Set to 60.")
     Config['Temperature Sensors']['Sensor_Publish_Rate'] = str(
         Sensor_Publish_Rate)
 
@@ -366,9 +386,9 @@ try:
         [W1ThermSensor.THERM_SENSOR_MAX31850K])
     # make sure we detected enough MAX31850K's
     if len(sensors) < TC_Count:
-        sys.exit("Fridge Monitor: Error, discovered {} MAX31850Ks ".format(
-            len(sensors)) + "when the config file specified {}".format(
-            TC_Count))
+        logging.error("Error, Found %s MAX31850Ks, expected %s.",
+            len(sensors), TC_Count)
+        sys.exit()
     TC = [None] * (TC_Count + 1)
     # get and sort sensors by address
     for sensor in sensors:
@@ -379,33 +399,42 @@ try:
     try:
         TC[0] = W1ThermSensor.get_available_sensors(
             [W1ThermSensor.THERM_SENSOR_DS18S20])[0]
-        print("Fridge Monitor: DS18S20 Board Sensor is ID={}".format(TC[0].id))
+        logging.info("DS18S20 Board Sensor is ID=%s.", TC[0].id)
     except NoSensorFoundError:
-        sys.exit("Fridge Monitor: Error, failed to discover board DS18S20")
-    # print sensor information
-    print("Fridge Monitor: TC1 is '{}' is ID={}".format(
-        Config['Temperature Sensors']['TC1_Name'], TC[1].id))
+        logging.error("Error, failed to discover board DS18S20.")
+        sys.exit()
+    # log sensor information
+    logging.info("TC1 is '%s' is ID=%s.",
+        Config['Temperature Sensors']['TC1_Name'], TC[1].id)
     if TC_Count > 1:        
-        print("Fridge Monitor: TC2 is '{}' is ID={}".format(
-            Config['Temperature Sensors']['TC2_Name'], TC[2].id))
+        logging.info("TC2 is '%s' is ID=%s.",
+            Config['Temperature Sensors']['TC2_Name'], TC[2].id)
     if TC_Count > 2:        
-        print("Fridge Monitor: TC3 is '{}' is ID={}".format(
-            Config['Temperature Sensors']['TC3_Name'], TC[3].id))
+        logging.info("TC3 is '%s' is ID=%s.",
+            Config['Temperature Sensors']['TC3_Name'], TC[3].id)
 
     # create TempData arrays
     Temps = [None] * (TC_Count + 1)
     for i in range(0, TC_Count + 1):
-        Temps[i] = TempData(0)
+        if i == 0:
+            Temps[0] = TempData(0, "Board Sensor")
+        if i == 1:
+            Temps[1] = TempData(0, Config['Temperature Sensors']['TC1_Name'])
+        if i == 2:
+            Temps[2] = TempData(0, Config['Temperature Sensors']['TC2_Name'])
+        if i == 3:
+            Temps[3] = TempData(0, Config['Temperature Sensors']['TC3_Name'])
+
 
     # load current state file
     try:
         with open(STATEFILE, 'r') as infile:
             CurState = json.load(infile)
-        print("Fridge Monitor: Loaded state file '{}'.".format(STATEFILE))
+        logging.info("Loaded state file %s.", STATEFILE)
     except:
         # load defaults if there is an exception in loading the state file
-        print("Fridge Monitor: Failed to load state file " +
-            "'{}'. Defaults loaded.".format(STATEFILE))
+        logging.warning("Warning, failed to load state file. Defaults loaded.", 
+            STATEFILE)
         CurState = {
             'alarm_disable': False,
             'alarms': [False, False, False, False],
@@ -533,15 +562,13 @@ try:
     Mqttc = mqtt.Client()
     # add username and password if defined
     if Config['MQTT']['UserName'] != "":
-        print("Fridge Monitor: MQTT authentication will be used")
+        logging.info("MQTT authentication will be used.")
         Mqttc.username_pw_set(username=Config['MQTT']['UserName'],
             password=Config['MQTT']['Password'])
     Mqttc.on_message = mqtt_on_message
     Mqttc.on_connect = mqtt_on_connect
     Mqttc.on_disconnect = mqtt_on_disconnect
-    if ENABLE_AVAILABILITY_TOPIC == True:
-        Mqttc.will_set(TopicAvailability, payload=PayloadNotAvailable, 
-            retain=True)
+    Mqttc.will_set(TopicAvailability, payload=PayloadNotAvailable, retain=True)
 
     # connect to broker
     status = False
@@ -556,9 +583,8 @@ try:
             status = False          # indicate failure
         # wait a bit before retrying
         if (status == False):
-            print("Fridge Monitor: Failed to connect to broker: " +
-                "mqtt://{}:{}".format(Config['MQTT']['Broker'], 
-                Config['MQTT'].getint('Port')))
+            logging.error("Failed to connect to broker: mqtt://%s:%s.",
+                Config['MQTT']['Broker'],  Config['MQTT'].getint('Port'))
             time.sleep(10)          # sleep for 10 seconds before retrying
     
     # grab SIGTERM to shutdown gracefully
@@ -588,66 +614,73 @@ try:
                     ResetAlarmDisable = True
             # look for Changed but only if connected
             if Changed and Mqttconnected:
-                # create payload for alarm disabled state
-                if NextState['alarm_disable']:
-                    payload = 'ON'
-                else:
-                    payload = 'OFF'
-                # publish the state
-                Mqttc.publish(ConfigAlarmDisable['stat_t'], payload=payload,
-                    qos=QOS, retain=True)
-                # create payload for alarm state, and update alert buzzer
-                if NextState['alarm'] and not NextState['alarm_disable']:
-                    buzzer_on()
-                    payload = 'ON'
-                else:
-                    buzzer_off()
-                    payload = 'OFF'
-                # publish the alarm state
-                Mqttc.publish(ConfigAlarm['stat_t'], payload=payload,
-                    qos=QOS, retain=True)
-                # print("Fridge Monitor: Change Occurred.")
-                # print("Fridge Monitor:  CurState={}".format(CurState))
-                # print("Fridge Monitor: NextState={}".format(NextState))
-                # check for alarm disable just turning ON
-                if (not CurState['alarm_disable'] and 
-                    NextState['alarm_disable']):
-                    if CurState['alarm'] or NextState['alarm']:
-                        # alarm was silenced
-                        print("Fridge Monitor: Alarm Disable turned ON. " +
-                            "Active alarm was silenced.")
+                try:
+                    # # update availability
+                    # Mqttc.publish(TopicAvailability, payload=PayloadAvailable, 
+                    #     qos=QOS, retain=True)
+                    # create payload for alarm disabled state
+                    if NextState['alarm_disable']:
+                        payload = 'ON'
                     else:
-                        # no alarm was silenced
-                        print("Fridge Monitor: Alarm Disable turned ON.")
-                # check for alarm disable just turning OFF
-                elif (CurState['alarm_disable'] and 
-                    not NextState['alarm_disable']):
-                    if CurState['alarm'] or NextState['alarm']:
-                        # alarm was in progress
-                        print("Fridge Monitor: Alarm Disable turned OFF. " +
-                            "Active alarm was resumed.")
+                        payload = 'OFF'
+                    # publish the state
+                    Mqttc.publish(ConfigAlarmDisable['stat_t'], 
+                        payload=payload, qos=QOS, retain=True)
+                    # create payload for alarm state, and update alert buzzer
+                    if NextState['alarm'] and not NextState['alarm_disable']:
+    # temporarily disable buzzer
+                        # buzzer_on()
+                        payload = 'ON'
                     else:
-                        # no alarm was in progress
-                        print("Fridge Monitor: Alarm Disable turned OFF. " +
-                            "No active alarms.")
-                # check for alarm going active while alarm disable is ON
-                elif (not CurState['alarm'] and NextState['alarm'] and 
-                    NextState['alarm_disable']):
-                    print("Fridge Monitor: Alarm active but silenced by " +
-                        "Alarm Disable.")
-                # check for alarm going active while alarm disable is OFF
-                elif (not CurState['alarm'] and NextState['alarm'] and 
-                    not NextState['alarm_disable']):
-                    print("Fridge Monitor: Alarm active.")
-                # check for alarm going inactive
-                elif CurState['alarm'] and not NextState['alarm']:
-                    print("Fridge Monitor: Alarm discontinued.")
-                # state is no longer changed
-                Changed = False
-                # next state is now current state (copy dictionary)
-                CurState = NextState.copy()
-                # queue up save state to file
-                queueSaveStateFile(CurState)
+                        buzzer_off()
+                        payload = 'OFF'
+                    # publish the alarm state
+                    Mqttc.publish(ConfigAlarm['stat_t'], payload=payload,
+                        qos=QOS, retain=True)
+                    # check for alarm disable just turning ON
+                    if (not CurState['alarm_disable'] and 
+                        NextState['alarm_disable']):
+                        if CurState['alarm'] or NextState['alarm']:
+                            # alarm was silenced
+                            logging.info("Alarm Disable turned ON. " +
+                                "Active alarm was silenced.")
+                        else:
+                            # no alarm was silenced
+                            logging.info("Alarm Disable turned ON.")
+                    # check for alarm disable just turning OFF
+                    elif (CurState['alarm_disable'] and 
+                        not NextState['alarm_disable']):
+                        if CurState['alarm'] or NextState['alarm']:
+                            # alarm was in progress
+                            logging.info("Alarm Disable turned OFF. " +
+                                "Active alarm was resumed.")
+                        else:
+                            # no alarm was in progress
+                            logging.info("Alarm Disable turned OFF. " +
+                                "No active alarms.")
+                    # check for alarm going active while alarm disable is ON
+                    elif (not CurState['alarm'] and NextState['alarm'] and 
+                        NextState['alarm_disable']):
+                        logging.info("Alarm active but silenced by " +
+                            "Alarm Disable.")
+                    # check for alarm going active while alarm disable is OFF
+                    elif (not CurState['alarm'] and NextState['alarm'] and 
+                        not NextState['alarm_disable']):
+                        logging.info("Alarm active.")
+                    # check for alarm going inactive
+                    elif CurState['alarm'] and not NextState['alarm']:
+                        logging.info("Alarm discontinued.")
+                    # queue up save state to file
+                    queueSaveStateFile(CurState)
+                except:
+                    # log the exception
+                    logging.exception("Failed to update state.")
+                finally:
+                    # always the state is no longer changed
+                    #   even if there was an exception
+                    Changed = False
+                    # next state is now current state (copy dictionary)
+                    CurState = NextState.copy()
 
         # did we receive a signal to exit?
         if killer.kill_now:
@@ -663,11 +696,12 @@ finally:
         if ENABLE_AVAILABILITY_TOPIC == True:
             Mqttc.publish(TopicAvailability, payload=PayloadNotAvailable,
                 qos=QOS, retain=True)
+            logging.info("Setting Availability to '%s'.", PayloadNotAvailable)
         Mqttc.disconnect()  # disconnect from MQTT broker
         Mqttc.loop_stop()   # will wait until disconnected
         buzzer_off()
-        print("Fridge Sensor: Disconnecting from broker:" +
-              " mqtt://{}:{}".format(Mqttc._host, Mqttc._port))
+        logging.info("Disconnecting from broker: mqtt://%s:%s.",
+            Mqttc._host, Mqttc._port)
     
     # try to cancel existing save state file timer
     try:
