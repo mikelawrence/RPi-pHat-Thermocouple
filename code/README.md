@@ -103,6 +103,10 @@ The following python libraries are required.
 * [Python3 w1thermsensor](https://github.com/timofurrer/w1thermsensor)
 * [Adafruit Python GPIO](https://github.com/adafruit/Adafruit_Python_GPIO)
 
+The following code came from Github
+
+* [W1ThermSensor](https://github.com/timofurrer/w1thermsensor/blob/master/w1thermsensor/core.py)
+
 The following code was pulled from the Internet
 
 * [timer.py](https://github.com/jalmeroth/homie-python/blob/master/homie/timer.py)

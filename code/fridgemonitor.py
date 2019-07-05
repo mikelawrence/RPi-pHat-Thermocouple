@@ -29,7 +29,7 @@
 
 # Can enable debug output by uncommenting:
 import logging
-logging.basicConfig(format='Fridge Monitor: %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='Fridge Monitor: %(message)s', level=logging.INFO)
 
 import threading
 import os
@@ -41,18 +41,19 @@ import time
 import datetime
 from subprocess import PIPE, Popen
 
-from w1thermsensor import W1ThermSensor
-from w1thermsensor import NoSensorFoundError
-from w1thermsensor import SensorNotReadyError
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
 
+from w1thermsensor import W1ThermSensor
+from w1thermsensor import NoSensorFoundError
+from w1thermsensor import SensorNotReadyError
+from w1thermsensor import SensorFaultError
 from timer import InfiniteTimer
 from tempdata import TempData
 
 # User configurable values
 ENABLE_AVAILABILITY_TOPIC = True
-FIRMWARE = "0.1.0"
+FIRMWARE = "0.1.1"
 CONFFILE = "fridgemonitor.conf"
 STATEFILE = "fridgemonitor.json"
 ALERT = 27                      # Pin number of alert signal on PCB
@@ -115,92 +116,92 @@ def buzzer_beep(beeptime):
     time.sleep(beeptime)
     GPIO.output(ALERT, GPIO.LOW)
 
-def get_max31850k_address(sensor):
-    """Returns the address of the MAX31850 1-Wire determined by the 
-        AD0-AD3 inputs on the device.
-
-        :returns: The address with a range of 0-15
-
-        :raises NoSensorFoundError: if the sensor could not be found or it 
-                                    is not a MAX31850.
-        :raises SensorNotReadyError: if the sensor is not ready yet.
-    """
-    # throw error if not a MAX31850 1-wire
-    if sensor.type != 0x3b:
-        raise NoSensorFoundError(sensor.type, sensor.id)
-    # reading temperature will read the entire scratchpad
-    try:
-        with open(sensor.sensorpath, "r") as f:
-            data = f.readlines()
-    except IOError:
-        raise NoSensorFoundError(sensor.type, sensor.id)
-    # make sure sensor is ready
-    if data[0].strip()[-3:] != "YES":
-        raise SensorNotReadyError()
-    dataASCIIBytes = data[0].split(" ")
-    # time to finally get the address
-    return int(dataASCIIBytes[4], 16) & 0x0F
-
 def measureSensors():
     """Take temperature and WiFi RSSI measurements.
         Executed in a thread different from main thread.
     """
     global StartTime, Changed, CurState, NextState
-    # initialize StartTime
-    if not StartTime:
-        StartTime = time.time()
-    # sample the temperatures (upwards of 1 sec per sensor)
-    for i in range(0, TC_Count + 1):
-        Temps[i].append(TC[i].get_temperature(W1ThermSensor.DEGREES_C))
-    # determine if it is time to publish sensors
-    if (time.time() - StartTime > 
-        Config['Temperature Sensors'].getint('Sensor_Publish_Rate')):
-        # update StartTime to next interval
-        StartTime += Config['Temperature Sensors'].getint(
-            'Sensor_Publish_Rate')
-        # publish temps
+    try:
+        # initialize StartTime
+        if not StartTime:
+            StartTime = time.time()
+        # sample the temperatures (upwards of 1 sec per sensor)
         for i in range(0, TC_Count + 1):
-            Mqttc.publish(ConfigTemp[i]['stat_t'], 
-                '{:0.2f}'.format(Temps[i].average()), qos=QOS, retain=True)
-        # publish RSSI but first get from iwconfig
-        process = Popen(['iwconfig', 'wlan0'], stdout=PIPE)
-        output, _error = process.communicate()
-        rssi = -1000
-        for line in output.decode("utf-8").split("\n"):
-            if "Signal level" in line:
-                rssi = int(line.split("Signal level=")[1].split(" ")[0])
-        if (rssi > -1000):
-            # RSSI was measured, time to publish
-            Mqttc.publish(ConfigRSSI['stat_t'], str(rssi), qos=QOS,
-                retain=True)
-        # needs to be thread safe
-        with Lock:
-            # check for alarm conditions (only on TC's)
-            for i in range(1, TC_Count + 1):
-                if CurState['alarms'][i] == True:
-                    # alarm in progress
-                    if (Temps[i].average() <= 
-                        Config['Temperature Sensors'].getfloat(
-                            'TC1_Alarm_Reset_Temp')):
-                        NextState['alarms'][i] = False
-                else:
-                    # alarm not in progress
-                    if (Temps[i].average() >= 
-                        Config['Temperature Sensors'].getfloat(
-                            'TC1_Alarm_Set_Temp')):
-                        NextState['alarms'][i] = True
-            # logical or of all alarms (only on TC's)
-            NextState['alarm'] = False
-            for i in range(1, TC_Count + 1):
-                if NextState['alarms'][i] == True:
-                    NextState['alarm'] = True
-            # determine alarm change and update alarm status
-            if CurState['alarm'] !=  NextState['alarm']:
-                Changed = True
-        # Clear temperature averages
-        for i in range(0, TC_Count + 1):
-            Temps[i].clear()
-
+            try:
+                # read the temperature
+                data = TC[i].get_temperature(W1ThermSensor.DEGREES_C)
+                # look for Not a Number
+                if data == float("NaN"):
+                    logging.error("Not a Number on %s",
+                        ConfigTemp[i].get('name')) 
+                # verify range
+                if data < -200.0 or data > 1372:
+                    logging.error("Sensor out of range on %s",
+                        ConfigTemp[i].get('name'))
+                    break
+                # add to temp data
+                Temps[i].append(data)
+            except SensorFaultError:
+                logging.error("Sensor Fault on %s",
+                    ConfigTemp[i].get('name'))
+            except SensorNotReadyError:
+                logging.error("Sensor Not Ready on %s",
+                    ConfigTemp[i].get('name'))
+            except:
+                logging.exception("Failed to read %s", 
+                    ConfigTemp[i].get('name'))
+        # determine if it is time to publish sensors
+        if (time.time() - StartTime > 
+            Config['Sensors'].getint('Sensor_Publish_Rate')):
+            # update StartTime to next interval
+            StartTime += Config['Sensors'].getint('Sensor_Publish_Rate')
+            # publish temps
+            for i in range(0, TC_Count + 1):
+                Mqttc.publish(ConfigTemp[i]['stat_t'], 
+                    f"{Temps[i].average():0.2F}", qos=QOS, retain=True)
+            if Config['Sensors'].getboolean('Enable_RSSI'):
+                # publish RSSI but first get from iwconfig
+                process = Popen(['iwconfig', 'wlan0'], stdout=PIPE)
+                output, _error = process.communicate()
+                rssi = -1000
+                for line in output.decode("utf-8").split("\n"):
+                    if "Signal level" in line:
+                        rssi = int(line.split("Signal level=")[1].split(" ")[0])
+                if (rssi > -1000):
+                    # RSSI was measured, time to publish
+                    Mqttc.publish(ConfigRSSI['stat_t'], str(rssi), qos=QOS,
+                        retain=True)
+            # needs to be thread safe
+            with Lock:
+                # check for alarm conditions (only on TC's)
+                for i in range(1, TC_Count + 1):
+                    if CurState['alarms'][i] == True:
+                        # alarm in progress
+                        if (Temps[i].average() <= 
+                            Config['Sensors'].getfloat(
+                                'TC1_Alarm_Reset_Temp')):
+                            NextState['alarms'][i] = False
+                    else:
+                        # alarm not in progress
+                        if (Temps[i].average() >= 
+                            Config['Sensors'].getfloat(
+                                'TC1_Alarm_Set_Temp')):
+                            NextState['alarms'][i] = True
+                # logical or of all alarms (only on TC's)
+                NextState['alarm'] = False
+                for i in range(1, TC_Count + 1):
+                    if NextState['alarms'][i] == True:
+                        NextState['alarm'] = True
+                # determine alarm change and update alarm status
+                if CurState['alarm'] !=  NextState['alarm']:
+                    Changed = True
+            # Clear temperature averages
+            for i in range(0, TC_Count + 1):
+                Temps[i].clear()
+    except:
+        # log the exception
+        logging.exception("Failed to measure sensors.")
+        
 def mqtt_on_message(mqttc, obj, msg):
     """Handle MQTT message events.
         Executed in a thread different from main thread.
@@ -240,8 +241,12 @@ def mqtt_on_connect(mqttc, userdata, flags, rc):
                 payload=json.dumps(ConfigAlarmDisable), qos=QOS, retain=True)
             mqttc.publish("/".join([TopicAlarm, 'config']),
                 payload=json.dumps(ConfigAlarm), qos=QOS, retain=True)
-            mqttc.publish("/".join([TopicRSSI, 'config']),
-                payload=json.dumps(ConfigRSSI), qos=QOS, retain=True)
+            if Config['Sensors'].getboolean('Enable_RSSI'):
+                mqttc.publish("/".join([TopicRSSI, 'config']),
+                    payload=json.dumps(ConfigRSSI), qos=QOS, retain=True)
+            else:
+                mqttc.publish("/".join([TopicRSSI, 'config']),
+                    "", qos=QOS, retain=True)
             for i in range(0, 4):
                 if i <= TC_Count:
                     # set defined temperature config topics
@@ -274,11 +279,11 @@ def mqtt_on_connect(mqttc, userdata, flags, rc):
         # connection failed
         if rc == 5:
             # MQTT Authentication failed
-            print("MQTT authentication failed: " +
-                "mqtt://%s:%s".format(mqttc._host, mqttc._port))
+            logging.error("MQTT authentication failed: mqtt://%s:%s",
+                mqttc._host, mqttc._port)
         else:
-            print("MQTT_ERR=%s: Failed to connect to broker: mqtt://%s:%s.",
-                rc, mqttc._host, mqttc._port)
+            logging.error("Error, MQTT_ERR=%s: Failed to connect to broker: " +
+                "mqtt://%s:%s.", rc, mqttc._host, mqttc._port)
 
 def mqtt_on_disconnect(client, userdata, rc):
     """Handle MQTT disconnect events.
@@ -346,6 +351,8 @@ try:
             'Discovery_Prefix': 'homeassistant',
             'Node_ID': 'fridge_monitor',
             'Node_Name': 'Fridge Monitor',
+            'Sensor_Publish_Rate': '60',
+            'Enable_RSSI': 'true',
             'TC_Count': '3',
             'TC1_Name': 'TC1 Temperature',
             'TC1_Alarm_Set_Temp': '15',
@@ -356,12 +363,11 @@ try:
             'TC3_Name': 'TC3 Temperature',
             'TC3_Alarm_Set_Temp': '15',
             'TC3_Alarm_Reset_Temp': '10',
-            'Sensor_Publish_Rate': '60',
         })
     Config.read(CONFFILE)
 
     # check TC_Count Range
-    TC_Count = Config['Temperature Sensors'].getint('TC_Count')
+    TC_Count = Config['Sensors'].getint('TC_Count')
     if TC_Count < 1:
         TC_Count = 1
         logging.info("Config file 'TC_Count' less than 1. Set to 1.")
@@ -370,16 +376,14 @@ try:
         logging.warning("Warning, config file 'TC_Count' greater than 3. " +
             "Set to 3.")
     # update TC_Count in Config
-    Config['Temperature Sensors']['TC_Count'] = str(TC_Count)
+    Config['Sensors']['TC_Count'] = str(TC_Count)
     # check Sensor Publish Rate Range
-    Sensor_Publish_Rate = Config['Temperature Sensors'].getint(
-        'Sensor_Publish_Rate')
+    Sensor_Publish_Rate = Config['Sensors'].getint('Sensor_Publish_Rate')
     if Sensor_Publish_Rate < 60:
         Sensor_Publish_Rate = 60
         logging.warning("Warning, config file 'Sensor_Publish_Rate' less " + 
             "than 60 seconds. Set to 60.")
-    Config['Temperature Sensors']['Sensor_Publish_Rate'] = str(
-        Sensor_Publish_Rate)
+    Config['Sensors']['Sensor_Publish_Rate'] = str(Sensor_Publish_Rate)
 
     # find MAX31850k Thermocouple Digitizers on board
     sensors = W1ThermSensor.get_available_sensors(
@@ -392,7 +396,7 @@ try:
     TC = [None] * (TC_Count + 1)
     # get and sort sensors by address
     for sensor in sensors:
-        address = get_max31850k_address(sensor) + 1
+        address = sensor.get_max31850k_address() + 1
         if address <= TC_Count:
             TC[address] = sensor
     # find DS18S20 sensor on PCB
@@ -405,26 +409,13 @@ try:
         sys.exit()
     # log sensor information
     logging.info("TC1 is '%s' is ID=%s.",
-        Config['Temperature Sensors']['TC1_Name'], TC[1].id)
+        Config['Sensors']['TC1_Name'], TC[1].id)
     if TC_Count > 1:        
         logging.info("TC2 is '%s' is ID=%s.",
-            Config['Temperature Sensors']['TC2_Name'], TC[2].id)
+            Config['Sensors']['TC2_Name'], TC[2].id)
     if TC_Count > 2:        
         logging.info("TC3 is '%s' is ID=%s.",
-            Config['Temperature Sensors']['TC3_Name'], TC[3].id)
-
-    # create TempData arrays
-    Temps = [None] * (TC_Count + 1)
-    for i in range(0, TC_Count + 1):
-        if i == 0:
-            Temps[0] = TempData(0, "Board Sensor")
-        if i == 1:
-            Temps[1] = TempData(0, Config['Temperature Sensors']['TC1_Name'])
-        if i == 2:
-            Temps[2] = TempData(0, Config['Temperature Sensors']['TC2_Name'])
-        if i == 3:
-            Temps[3] = TempData(0, Config['Temperature Sensors']['TC3_Name'])
-
+            Config['Sensors']['TC3_Name'], TC[3].id)
 
     # load current state file
     try:
@@ -433,8 +424,7 @@ try:
         logging.info("Loaded state file %s.", STATEFILE)
     except:
         # load defaults if there is an exception in loading the state file
-        logging.warning("Warning, failed to load state file. Defaults loaded.", 
-            STATEFILE)
+        logging.warning("Warning, failed to load state file. Defaults loaded.")
         CurState = {
             'alarm_disable': False,
             'alarms': [False, False, False, False],
@@ -519,7 +509,7 @@ try:
     TopicTemp[1] = "/".join([Config['Home Assistant']['Discovery_Prefix'], 
         'sensor', Config['Home Assistant']['Node_ID'], 'TC1_temperature'])
     ConfigTemp[1] = {
-        'name': Config['Temperature Sensors']['TC1_Name'],
+        'name': Config['Sensors']['TC1_Name'],
         'stat_t': "/".join([TopicTemp[1], 'state']),
         'unit_of_meas': '°C',
     }
@@ -534,7 +524,7 @@ try:
     TopicTemp[2] = "/".join([Config['Home Assistant']['Discovery_Prefix'], 
         'sensor', Config['Home Assistant']['Node_ID'], 'TC2_temperature'])
     ConfigTemp[2] = {
-        'name': Config['Temperature Sensors']['TC2_Name'],
+        'name': Config['Sensors']['TC2_Name'],
         'stat_t': "/".join([TopicTemp[2], 'state']),
         'unit_of_meas': '°C',
     }
@@ -548,7 +538,7 @@ try:
     TopicTemp[3] = "/".join([Config['Home Assistant']['Discovery_Prefix'], 
         'sensor', Config['Home Assistant']['Node_ID'], 'TC3_temperature'])
     ConfigTemp[3] = {
-        'name': Config['Temperature Sensors']['TC3_Name'],
+        'name': Config['Sensors']['TC3_Name'],
         'stat_t': "/".join([TopicTemp[3], 'state']),
         'unit_of_meas': '°C',
     }
@@ -586,7 +576,12 @@ try:
             logging.error("Failed to connect to broker: mqtt://%s:%s.",
                 Config['MQTT']['Broker'],  Config['MQTT'].getint('Port'))
             time.sleep(10)          # sleep for 10 seconds before retrying
-    
+
+    # create TempData arrays
+    Temps = [None] * (TC_Count + 1)
+    for i in range(0, TC_Count + 1):
+        Temps[i] = TempData(12, ConfigTemp[i].get('name'))
+
     # grab SIGTERM to shutdown gracefully
     killer = GracefulKiller()
 
@@ -594,7 +589,7 @@ try:
     Mqttc.loop_start()
 
     # start the background measure temperature timer
-    sensorTimer = InfiniteTimer(5, measureSensors, name="SensorTimer")
+    sensorTimer = InfiniteTimer(5, measureSensors, name="Sensor Timer")
     sensorTimer.start()
 
     # loop forever looking for state changes

@@ -69,7 +69,7 @@ Clone this repository from Github with the following commands.
 ```text
 cd /home/pi
 git clone https://github.com/mikelawrence/RPi-pHat-Thermocouple
-```text
+```
 
 ### Configure ID EEPROM
 

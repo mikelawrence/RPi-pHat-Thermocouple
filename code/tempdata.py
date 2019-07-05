@@ -28,10 +28,10 @@ import logging
 #logger = logging.getLogger(__name__)
 
 class TempData:
-    def __init__(self, maxlength, name = ""):
+    def __init__(self, maxlength = 10, name = ""):
         """Keep track of temperature sensor data over time and average."""
         # save maximum number of data points to store
-        if not maxlength:
+        if maxlength == None:
             # default length is 10
             self._maxlength = 10
         else:
@@ -56,16 +56,17 @@ class TempData:
                     # pop the data from the right side of list (oldest side)
                     self._data.pop()
                     self._count -= 1
+            else:
+                logging.debug(f"Debug, {self._name} add NaN thrown out.")    
         else:
-            logging.debug(f"Debug, {self._name} add NaN thrown out.")    
+            logging.debug(f"Debug, {self._name} add None thrown out.")    
     def average(self):
         """Get the average of all stored temperature samples."""
         sum = 0
         # loop through all temperature samples
         for temp in self._data:
             sum += temp
-        logging.debug(f"Debug, {self._name} "
-            f"average {round(sum / self._count, 1)}.")
+        logging.debug(f"Debug, {self._name} average {sum / self._count:0.2F}.")
         return sum / self._count
     
     def clear(self):
