@@ -279,7 +279,7 @@ class W1ThermSensor(object):
         # get MAX31850 the raw thermocouple temperature in Celsius
         Traw = int(dataASCIIBytes[1], 16) << 6
         Traw += int(dataASCIIBytes[0], 16) >> 2
-        # convert to 2's complement
+        # convert sign/magnitude to 2's complement with sign at bit 14
         if (Traw & (1 << (14 - 1))) != 0:
             Traw = Traw - (1 << 14)
         # convert fixed point to float
@@ -288,7 +288,7 @@ class W1ThermSensor(object):
         # get MAX31850 cold junction temperature in Celsius
         Tcj = int(dataASCIIBytes[3], 16) << 4
         Tcj += int(dataASCIIBytes[2], 16) >> 4
-        # convert to 2's complement
+        # convert sign/magnitude to 2's complement with sign at bit 12
         if (Tcj & (1 << (12 - 1))) != 0:
             Tcj = Tcj - (1 << 12)
         # convert fixed point to float
@@ -296,6 +296,7 @@ class W1ThermSensor(object):
 
         # NIST K-Type thermocouple linearization
         # see https://srdata.nist.gov/its90/download/type_k.tab
+        # also 
         # first calculate cold junction equivalent thermocouple voltage from
         #   cold junction temperature using NIST temp to voltage coefficients
         if Tcj < 0.0:
@@ -348,11 +349,13 @@ class W1ThermSensor(object):
         #   thermocouple (see Table 1 of MAX31855 datasheet)
         Vt = 0.041276 * (Traw - Tcj)
         # add the linearized cold junction equivalent thermocouple voltage 
-        #   to thermocouple voltage
+        #   to thermocouple voltage (mV)
         Vtotal = Vt + Vcj
-        # calculate linerized thermocouple temperature from Vtotal using
-        #   NIST voltage to temp inverse coefficients
-        if Traw < 0.0:
+        # calculate linearized thermocouple temperature from Vtotal using
+        #   NIST voltage-to-temperature (inverse) coefficients
+        #   coefficent set to use (out of three) is determined by Vtotal
+        #   which is effectively linearized temperature
+        if Vtotal < 0.0:
             # range -270°C to 0°C
             d = [
                  0.0000000E+00,
@@ -365,7 +368,7 @@ class W1ThermSensor(object):
                 -1.0450598E-02,
                 -5.1920577E-04,
             ]
-        elif Traw < 500.0:
+        elif Vtotal < 20.644: 
             # range 0°C to 500°C
             d = [
                  0.000000E+00,
@@ -395,43 +398,43 @@ class W1ThermSensor(object):
         for i in range(0, len(d)):
             Tt += d[i] * math.pow(Vtotal, i)
 
-        # # rational polynomial function approximation linearizations for
-        # #   K-Type  thermocouples with a temperature range of -100°C to 100°C
-        # #   see http://www.mosaic-industries.com/embedded-systems/
-        # #       microcontroller-projects/temperature-measurement/
-        # #       thermocouple/type-k-calibration-table
-        # # first get cold junction voltage from cold junction temperature
-        # #   cold temperature junction range of -20°C to 70°C
-        # T0 =  2.5000000E+01
-        # V0 =  1.0003453E+00
-        # p1 =  4.0514854E-02
-        # p2 = -3.8789638E-05
-        # p3 = -2.8608478E-06
-        # p4 = -9.5367041E-10
-        # q1 = -1.3948675E-03
-        # q2 = -6.7976627E-05
-        # a = Tcj - T0
-        # VcjNew = (V0 + a*(p1 + a*(p2 + a*(p3 + p4*a))) / (1 + a*(q1 + q2*a)))
-        # # linearize thermocouple temperature
-        # T0 = -8.7935962E+00
-        # V0 = -3.4489914E-01
-        # p1 =  2.5678719E+01
-        # p2 = -4.9887904E-01
-        # p3 = -4.4705222E-01
-        # p4 = -4.4869203E-02
-        # q1 =  2.3893439E-04
-        # q2 = -2.0397750E-02
-        # q3 = -1.8424107E-03
-        # # cold junction voltage + thermocouple voltage
-        # totalVoltage = 0.041276 * (Traw - Tcj) + VcjNew
-        # # intermediate sum for equation below
-        # a = totalVoltage - V0
-        # # linearize thermocouple measurement
-        # TtNew = (T0 + a*(p1 + a*(p2 + a*(p3 + p4*a))) /
-        #             (1 + a*(q1 + a)*(q2 + q3*a)))
-        # logging.debug(f"Vcj={Vcj}, VcjNew={VcjNew}")
-        # logging.debug(f"Tt={Tt:0.6F}, TtNew={TtNew:0.6F}, " +
-            # f"Traw={Traw:0.2F}, Tcj={Tcj:0.2F}")
+        # rational polynomial function approximation linearizations for
+        #   K-Type  thermocouples with a temperature range of -100°C to 100°C
+        #   see http://www.mosaic-industries.com/embedded-systems/
+        #       microcontroller-projects/temperature-measurement/
+        #       thermocouple/type-k-calibration-table
+        # first get cold junction voltage from cold junction temperature
+        #   cold temperature junction range of -20°C to 70°C
+        T0 =  2.5000000E+01
+        V0 =  1.0003453E+00
+        p1 =  4.0514854E-02
+        p2 = -3.8789638E-05
+        p3 = -2.8608478E-06
+        p4 = -9.5367041E-10
+        q1 = -1.3948675E-03
+        q2 = -6.7976627E-05
+        a = Tcj - T0
+        VcjNew = (V0 + a*(p1 + a*(p2 + a*(p3 + p4*a))) / (1 + a*(q1 + q2*a)))
+        # linearize thermocouple temperature
+        T0 = -8.7935962E+00
+        V0 = -3.4489914E-01
+        p1 =  2.5678719E+01
+        p2 = -4.9887904E-01
+        p3 = -4.4705222E-01
+        p4 = -4.4869203E-02
+        q1 =  2.3893439E-04
+        q2 = -2.0397750E-02
+        q3 = -1.8424107E-03
+        # cold junction voltage + thermocouple voltage
+        totalVoltage = 0.041276 * (Traw - Tcj) + VcjNew
+        # intermediate sum for equation below
+        a = totalVoltage - V0
+        # linearize thermocouple measurement
+        TtNew = (T0 + a*(p1 + a*(p2 + a*(p3 + p4*a))) /
+                    (1 + a*(q1 + a)*(q2 + q3*a)))
+        logging.debug(f"Vcj={Vcj}, VcjNew={VcjNew}")
+        logging.debug(f"Tt={Tt:0.6F}, TtNew={TtNew:0.6F}, " +
+            f"Traw={Traw:0.2F}, Tcj={Tcj:0.2F}")
 
         return Tt * 1000.0
         

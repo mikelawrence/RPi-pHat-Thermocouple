@@ -8,7 +8,7 @@ All settings for this application are in the '[fridgemonitor.conf](fridgemonitor
 
 ## Home Assistant Notes
 
-When Discovery is enabled Home Assistant will automatically pick up the Alarm Disable switch, Alarm binary_sensor, RSSI sensor, and four temperature sensors. The is a DS18S20 1-Wire Thermometer on the board and three thermocouple inputs for measuring temperature remotely with thermocouple wire.
+When Discovery is enabled Home Assistant will automatically pick up the Alarm Disable switch, Alarm binary_sensor, RSSI sensor, four temperature sensors, and three door sensors. The is a DS18S20 1-Wire Thermometer on the board and three thermocouple inputs for measuring temperature remotely with thermocouple wire.
 
 If you don't want to use discovery here is the configuration of the Fridge Monitor in Home Assistant. Note the 'studio_fridge_monitor' you see in the example yaml is the Node_ID which is specified in the 'fridgemonitor.conf' file.
 
@@ -27,39 +27,77 @@ switch:
 sensor:
   - platform: mqtt
     sensors:
-        # WiFi Received Signal Strength Indicator (RSSI)
-        name: "Studio Fridge Monitor RSSI"
-            state_topic: "homeassistant/sensor/studio_fridge_monitor/rssi/state"
-            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
-            unit_of_measurement: 'dBm'
-        # Temperature measured by the on-board DS18S20 Sensor
-        name: "Studio Fridge Monitor Temperature"
-            state_topic: "homeassistant/sensor/studio_fridge_monitor/temperature/state"
-            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
-            unit_of_measurement: '°C'
-        # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC1)
-        name: "Studio Fridge Temperature"
-            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC1_temperature/state"
-            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
-            unit_of_measurement: '°C'
-        # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC2)
-        name: "Studio Freezer Temperature"
-            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC2_temperature/state"
-            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
-            unit_of_measurement: '°C'
-        # Temperature measured by the on-board MAX31850K Thermocouple Sensor (TC3)
-        name: "Studio Fridge Compressor Temperature"
-            state_topic: "homeassistant/sensor/studio_fridge_monitor/TC3_temperature/state"
-            availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
-            unit_of_measurement: '°C'
+      # WiFi Received Signal Strength Indicator (RSSI)
+      name: "Studio Fridge Monitor RSSI"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/rssi/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: 'dBm'
+      # Temperature measured by the DS18S20 Sensor (1 minute average)
+      name: "Studio Fridge Monitor Temperature"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/temperature/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC1) (1 minute average)
+      name: "Studio Fridge Temperature"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC1_temperature/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC2) (1 minute average)
+      # if TC_Count in configuration file is set to 1 then this sensor does not exist
+      name: "Studio Freezer Temperature"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC2_temperature/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC3) (1 minute average)
+      # if TC_Count in configuration file is set to 2 or 1 then this sensor does not exist
+      name: "Studio Fridge Compressor Temperature"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC3_temperature/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC1) (24 hour average)
+      name: "Studio Fridge Average"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC1_average/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C/min'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC2) (24 hour average)
+      # if TC_Count in configuration file is set to 1 then this sensor does not exist
+      name: "Studio Freezer Average"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC2_average/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C/min'
+      # Temperature measured by the MAX31850K Thermocouple Sensor (TC3) (24 hour average)
+      # if TC_Count in configuration file is set to 2 or 1 then this sensor does not exist
+      name: "Studio Fridge Compressor Average"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC3_average/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        unit_of_measurement: '°C/min'
 binary_sensor:
   - platform: mqtt
     sensors:
       # When active the Fridge Monitor has detected an over temperature condition
+      #   on any thermocouple sensor
       name: "Studio Fridge Monitor Alarm"
         state_topic: "homeassistant/binary_sensor/studio_fridge_monitor/alarm/state"
         availability_topic: "homeassistant/switch/studio_fridge_monitor/status"
         device_class: "heat"
+      # Analysis of TC1 to determine if the door is open
+      name: "Studio Fridge Door"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC1_door/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        device_class: "door"
+      # Analysis of TC2 to determine if the door is open
+      # if TC_Count in configuration file is set to 1 then this sensor does not exist
+      name: "Studio Freezer Door"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC2_door/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        device_class: "door"
+      # Analysis of TC3 to determine if the door is open
+      #  this doesn't make sense for compressor temperature monitor
+      # if TC_Count in configuration file is set to 2 or 1 then this sensor does not exist
+      name: "Studio Fridge Compressor Door"
+        state_topic: "homeassistant/sensor/studio_fridge_monitor/TC3_door/state"
+        availability_topic: "homeassistant/switch/studio_fridge_monitor/avail"
+        device_class: "door"
 ```
 
 ## Raspberry Pi Setup
@@ -94,6 +132,16 @@ sudo chmod 644 /lib/systemd/system/fridgemonitor.service
 sudo systemctl enable fridgemonitor.service
 sudo systemctl start fridgemonitor.service
 ```
+
+## Notes
+
+* The Raspberry Pi should be placed on the outside of the refridgerator/freezer and thermocouple wire should be run inside to measure the temperatures.
+
+* The pHat seems to have some infrequent noise in the readings. Thermocouples are also good at picking up noise so the software trys to eliminate noisy readings. If a thermocouple reading is greater than ±3°C away from last reading the sample will be thrown out. It will do this up to 3 times in a row before allowing the 4th out of bounds sample to pass through.  
+
+* All temperature sensors are sampled every 5 seconds. These samples are averaged every minute. These 1 minute averages are keep for 24 hours to compute an 24 hour average. The 1 minute samples are saved to disk so power interruption or reboot will prevent the complete loss of data for the 24 hour average.
+
+* The door sensors use how fast temperature rises on the 1 minute averages to detect when a door is open. This is reasonable for normal operation but there are problems with this approach. For instance, a quick open and close might be missed especially if the compressor is on and the temperature is falling. If the door is left open eventually the rise in temperature will level out and the door will be recognized as closed.
 
 ## Acknowledgments
 
