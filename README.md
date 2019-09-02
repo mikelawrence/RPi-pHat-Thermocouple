@@ -57,9 +57,8 @@ Although the MAX38150K datasheet typical application circuit doesn't show the us
 This setup makes several assumptions. First you are using Raspbian Buster. This software and instructions most likely work on other versions of Raspbian but they have not been tested. Second Python3 is the target programming environment. It is also assumed that you are using the standard `pi` user. Otherwise you will have to edit the commands by replacing `/home/pi` with your user's home directory. Install everything needed by executing the following commands.
 
 ```text
-sudo apt-get update
-sudo apt-get -y install git python3 python3-pip python3-rpi.gpio python3-w1thermsensor
-sudo pip3 install paho-mqtt
+sudo apt update
+sudo apt -y install git python3-rpi.gpio python3-w1thermsensor python3-paho-mqtt
 ```
 
 ### Get the repository from Github
