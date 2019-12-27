@@ -243,6 +243,7 @@ class TempData:
         self._delta = float('nan')
         self._noisy = 0
         self._open = False
+        self._alarm = False
 
     @property
     def name(self):
