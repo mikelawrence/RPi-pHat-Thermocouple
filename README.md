@@ -14,10 +14,9 @@ I keep an upright freezer in my garage and on two occasions I have had the freez
 
 * Rev 2.0 PCB has been ordered from OSH Park and has been fully tested.
   * Removed one of the four MAX31850K's.
-  * Increased thermocouple input filtering buy adding ferrite beads and a larger capacitor.
-  * Added more filtering to thermocouple side of MAX31850K's.
+  * Increased thermocouple input filtering by adding ferrite beads and a larger capacitor.
   * Added DC Power connector and switching power supply that powers both the Raspberry Pi and the Hat.
-  * The noisy reading the MAX31850K's occasionaly get are reduced in this version but not gone.
+  * The occasional noisy reading from the MAX31850K's are reduced in this version but not gone.
   * You can order parts from Mouser using this [shared BOM](https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=bd69c35967).
   * You can order the PCB from OSH Park using this [link](https://oshpark.com/shared_projects/meYar6Ji).
 * Rev 1.2 PCB has been ordered from OSH Park and tested.
@@ -50,7 +49,7 @@ This Hat will safely power the Raspberry Pi and this board up to 650mA. Keep in 
 
 ### MAX31850K Thermocouple-to-Digital Converter
 
-Although the MAX38150K datasheet typical application circuit doesn't show the use of ferrite beads many designs seems to include them. That in combination with the larger than normal capacitor across the input will hopefully improve sampling errors even further.
+Although the MAX38150K datasheet typical application circuit doesn't show the use of ferrite beads many designs seem to include them. That in combination with the larger than normal capacitor across the input will hopefully improve sampling errors even further.
 
 ## Raspberry Pi Setup
 
