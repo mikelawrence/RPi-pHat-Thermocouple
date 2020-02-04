@@ -54,7 +54,7 @@ from tempdata import TempData
 
 # User configurable values
 ENABLE_AVAILABILITY_TOPIC = True
-FIRMWARE = "1.0.2"
+FIRMWARE = "1.0.3"
 CONFFILE = "fridgemonitor.conf"
 STATEFILE = "fridgemonitor.json"
 ALERT = 27                      # Pin number of alert signal on PCB
@@ -69,6 +69,39 @@ SaveStateTimer = None
 StartTime = None
 ResetAlarmDisable = True        # when True and hour is 6PM reset Alarm Disable
 Hat_Product = ""
+
+
+# get the Raspberry Pi CPU Serial Number
+def getCpuSerial():
+  # Extract serial from cpuinfo file
+  cpuserial = "0000000000000000"
+  try:
+    f = open('/proc/cpuinfo','r')
+    for line in f:
+      if line[0:6]=='Serial':
+        cpuserial = line[10:26]
+    f.close()
+  except:
+    cpuserial = "00000000000Error"
+  return cpuserial.strip()
+
+def getEthMac():
+  try:
+    f = open('/sys/class/net/eth0/address','r')
+    mac = f.readline()
+    f.close()
+  except:
+    return None
+  return mac.strip()
+
+def getWLANMac():
+  try:
+    f = open('/sys/class/net/wlan0/address','r')
+    mac = f.readline()
+    f.close()
+  except:
+    return None
+  return mac.strip()
 
 class GracefulKiller:
     """Class to handle SIGTERM signal."""
@@ -492,6 +525,25 @@ try:
     # since this is a first run when should update the MQTT server states
     Changed = True
 
+    # get unique identifiers
+    UniqueId = getCpuSerial()
+    Eth0Mac = getEthMac()
+    Wlan0Mac = getWLANMac()
+
+    # each config entry get this device
+    HA_device = {
+        'identifiers': 'RPi' + UniqueId,
+        'connections': [],
+        'name': Config.get('Home Assistant', 'Node_Name'),
+        'model': 'Fridge Monitor',
+        'manufacturer': 'Mike Lawrence',
+        'sw_version': FIRMWARE
+    }
+    if Eth0Mac:
+        HA_device['connections'].append(['ETH0_MAC', Eth0Mac])
+    if Wlan0Mac:
+        HA_device['connections'].append(['WLAN0_MAC', Wlan0Mac])
+
     # initial list sizes
     TopicTemp = [None] * 4
     ConfigTemp = [None] * 4
@@ -516,6 +568,8 @@ try:
         'stat_t': "/".join([TopicAlarmDisable, 'state']),
         'cmd_t': "/".join([TopicAlarmDisable, 'set']),
         'qos': QOS,
+        'uniq_id': UniqueId+'00',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -528,6 +582,8 @@ try:
         'name': Config['Home Assistant']['Node_Name'] + " Alarm",
         'stat_t': "/".join([TopicAlarm, 'state']),
         'dev_cla': "heat",
+        'uniq_id': UniqueId+'01',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -540,6 +596,8 @@ try:
         'name': Config['Home Assistant']['Node_Name'] + " RSSI",
         'stat_t': "/".join([TopicRSSI, 'state']),
         'unit_of_meas': 'dBm',
+        'uniq_id': UniqueId+'02',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -552,6 +610,8 @@ try:
         'name': Config['Home Assistant']['Node_Name'] + " Temperature",
         'stat_t': "/".join([TopicTemp[0], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'03',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -564,6 +624,8 @@ try:
         'name': Config['Sensors']['TC1_Name'] + " Temperature",
         'stat_t': "/".join([TopicTemp[1], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'04',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -576,6 +638,8 @@ try:
         'name': Config['Sensors']['TC1_Name'] + " Average",
         'stat_t': "/".join([TopicAvg[1], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'05',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -588,6 +652,8 @@ try:
         'name': Config['Sensors']['TC1_Name'] + " Delta",
         'stat_t': "/".join([TopicDelta[1], 'state']),
         'unit_of_meas': '°C/min',
+        'uniq_id': UniqueId+'06',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -600,6 +666,8 @@ try:
         'name': Config['Sensors']['TC1_Name'] + " Door",
         'stat_t': "/".join([TopicDoor[1], 'state']),
         'dev_cla': "door",
+        'uniq_id': UniqueId+'07',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -612,6 +680,8 @@ try:
         'name': Config['Sensors']['TC2_Name'] + " Temperature",
         'stat_t': "/".join([TopicTemp[2], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'08',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -624,6 +694,8 @@ try:
         'name': Config['Sensors']['TC2_Name'] + " Average",
         'stat_t': "/".join([TopicAvg[2], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'09',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -636,6 +708,8 @@ try:
         'name': Config['Sensors']['TC2_Name'] + " Delta",
         'stat_t': "/".join([TopicDelta[2], 'state']),
         'unit_of_meas': '°C/min',
+        'uniq_id': UniqueId+'0A',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -648,6 +722,8 @@ try:
         'name': Config['Sensors']['TC2_Name'] + " Door",
         'stat_t': "/".join([TopicDoor[2], 'state']),
         'dev_cla': "door",
+        'uniq_id': UniqueId+'0B',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -660,6 +736,8 @@ try:
         'name': Config['Sensors']['TC3_Name'] + " Temperature",
         'stat_t': "/".join([TopicTemp[3], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'0C',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
@@ -672,6 +750,8 @@ try:
         'name': Config['Sensors']['TC3_Name'] + " Average",
         'stat_t': "/".join([TopicAvg[3], 'state']),
         'unit_of_meas': '°C',
+        'uniq_id': UniqueId+'0D',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -684,6 +764,8 @@ try:
         'name': Config['Sensors']['TC3_Name'] + " Delta",
         'stat_t': "/".join([TopicDelta[3], 'state']),
         'unit_of_meas': '°C/min',
+        'uniq_id': UniqueId+'0E',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:        
@@ -696,6 +778,8 @@ try:
         'name': Config['Sensors']['TC3_Name'] + " Door",
         'stat_t': "/".join([TopicDoor[3], 'state']),
         'dev_cla': "door",
+        'uniq_id': UniqueId+'0F',
+        'dev': HA_device,
     }
     # add availability topic if configured
     if ENABLE_AVAILABILITY_TOPIC == True:
