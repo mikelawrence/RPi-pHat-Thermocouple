@@ -37,7 +37,7 @@ I keep an upright freezer in my garage and on two occasions I have had the freez
 
 * This PCB design uses my custom libraries available here [Mike's KiCad Libraries](https://github.com/mikelawrence/KiCad-Libraries).
 * This PCB design is based on [RPi_Zero_pHat_Template](https://github.com/mikelawrence/RPi_Zero_pHat_Template).
-* This PCB was designed with [KiCad 5.1.2](http://kicad-pcb.org).
+* This PCB was designed with [KiCad 5.1.2](http://kicad.org).
 * For Bill of Materials generation I use my version of [KiBoM](https://github.com/mikelawrence/KiBoM) forked from [SchrodingersGat](https://github.com/SchrodingersGat/KiBoM).
 * The LMZ21700 Simple Switcher, AT24CS32, and MAX31850K parts have an exposed pad on the bottom which requires either a reflow oven or hot air to solder properly.
 
